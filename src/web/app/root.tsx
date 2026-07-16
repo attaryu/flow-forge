@@ -6,6 +6,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "~/shared/utils/query-client";
+import { userQueryOption } from "~/features/auth/hooks/api/use-user";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -41,8 +44,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export async function clientLoader() {
+  try {
+    const user = await queryClient.fetchQuery(userQueryOption);
+    return { user };
+  } catch {
+    return { user: null };
+  }
+}
+
 export default function App() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
