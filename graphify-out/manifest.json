@@ -160,19 +160,14 @@
     "semantic_hash": "6b309f3d69ca464dc84ee34ce2496b1a"
   },
   "src/web/app/root.tsx": {
-    "mtime": 1784188406.0369933,
-    "ast_hash": "f4b82b77f74cc4d8956c392738190290",
-    "semantic_hash": "f4b82b77f74cc4d8956c392738190290"
+    "mtime": 1784200238.3694336,
+    "ast_hash": "2bd982fcd214dcef1ef6fc07b2e0c4db",
+    "semantic_hash": "2bd982fcd214dcef1ef6fc07b2e0c4db"
   },
   "src/web/app/routes.ts": {
-    "mtime": 1784188406.0409932,
-    "ast_hash": "9128c4687b9f9e5dbbcd7dbbb53c28d8",
-    "semantic_hash": "9128c4687b9f9e5dbbcd7dbbb53c28d8"
-  },
-  "src/web/app/routes/home.tsx": {
-    "mtime": 1784188406.0460057,
-    "ast_hash": "fa64942807f6ce7fbac591fcc6f77e4f",
-    "semantic_hash": "fa64942807f6ce7fbac591fcc6f77e4f"
+    "mtime": 1784200284.2712667,
+    "ast_hash": "d2ec2a3e8d019a80e8f138351ffe912a",
+    "semantic_hash": "d2ec2a3e8d019a80e8f138351ffe912a"
   },
   "src/web/app/welcome/welcome.tsx": {
     "mtime": 1784188406.063995,
@@ -180,14 +175,14 @@
     "semantic_hash": "e780bb4ef2c65c42dd494771f21f2f12"
   },
   "src/web/package.json": {
-    "mtime": 1784188406.067992,
-    "ast_hash": "928cd475d94672fa18624faebc3ebc29",
-    "semantic_hash": "928cd475d94672fa18624faebc3ebc29"
+    "mtime": 1784198331.6113305,
+    "ast_hash": "a86845583c25d44d31b95cae3bb37db4",
+    "semantic_hash": "a86845583c25d44d31b95cae3bb37db4"
   },
   "src/web/react-router.config.ts": {
-    "mtime": 1784188406.0779953,
-    "ast_hash": "6756d955f9e7bf3eae2817433bf72b26",
-    "semantic_hash": "6756d955f9e7bf3eae2817433bf72b26"
+    "mtime": 1784200127.6272547,
+    "ast_hash": "ac8c547deed659c347378972d5ecd6b9",
+    "semantic_hash": "ac8c547deed659c347378972d5ecd6b9"
   },
   "src/web/tsconfig.json": {
     "mtime": 1784188406.081994,
@@ -338,5 +333,230 @@
     "mtime": 1784188406.0559938,
     "ast_hash": "505e4488113b51d30bc9d12ccc5d3ea0",
     "semantic_hash": "505e4488113b51d30bc9d12ccc5d3ea0"
+  },
+  ".agents/skills/shadcn/evals/evals.json": {
+    "mtime": 1784194505.0083559,
+    "ast_hash": "14eed42e07f934b2d4e6520dcbbda35b",
+    "semantic_hash": "14eed42e07f934b2d4e6520dcbbda35b"
+  },
+  "skills-lock.json": {
+    "mtime": 1784194643.1679597,
+    "ast_hash": "4277f0d45d14b1bf4c79bb0ed6c1688d",
+    "semantic_hash": "4277f0d45d14b1bf4c79bb0ed6c1688d"
+  },
+  "src/web/app/components/app-sidebar.tsx": {
+    "mtime": 1784198129.8253357,
+    "ast_hash": "90af41334b7e2119aa2dc4299061e27b",
+    "semantic_hash": "90af41334b7e2119aa2dc4299061e27b"
+  },
+  "src/web/app/components/ui/avatar.tsx": {
+    "mtime": 1784200430.1906607,
+    "ast_hash": "8070601777805cc6d92934a8bfd81832",
+    "semantic_hash": "8070601777805cc6d92934a8bfd81832"
+  },
+  "src/web/app/components/ui/breadcrumb.tsx": {
+    "mtime": 1784200430.2219107,
+    "ast_hash": "78fe095f05b48f1104bf3b01c6368044",
+    "semantic_hash": "78fe095f05b48f1104bf3b01c6368044"
+  },
+  "src/web/app/components/ui/button.tsx": {
+    "mtime": 1784200430.3004782,
+    "ast_hash": "363c6f5dc2062de92a68d1b932965a1d",
+    "semantic_hash": "363c6f5dc2062de92a68d1b932965a1d"
+  },
+  "src/web/app/components/ui/card.tsx": {
+    "mtime": 1784200430.2375357,
+    "ast_hash": "aec99c1fad8cae4814c7f692d9f822e1",
+    "semantic_hash": "aec99c1fad8cae4814c7f692d9f822e1"
+  },
+  "src/web/app/components/ui/collapsible.tsx": {
+    "mtime": 1784196314.097155,
+    "ast_hash": "94e7c6186d14656f86e5c5f7e58df085",
+    "semantic_hash": "94e7c6186d14656f86e5c5f7e58df085"
+  },
+  "src/web/app/components/ui/dropdown-menu.tsx": {
+    "mtime": 1784200430.1906607,
+    "ast_hash": "ec2cdbdbfad61687f79f331010a85f2a",
+    "semantic_hash": "ec2cdbdbfad61687f79f331010a85f2a"
+  },
+  "src/web/app/components/ui/input.tsx": {
+    "mtime": 1784200430.2062917,
+    "ast_hash": "9759c68141a4b70b4b7966276d96eaaa",
+    "semantic_hash": "9759c68141a4b70b4b7966276d96eaaa"
+  },
+  "src/web/app/components/ui/label.tsx": {
+    "mtime": 1784200430.2375357,
+    "ast_hash": "45bd282ece9580c4110ec6186d7f8a78",
+    "semantic_hash": "45bd282ece9580c4110ec6186d7f8a78"
+  },
+  "src/web/app/components/ui/separator.tsx": {
+    "mtime": 1784200430.2062917,
+    "ast_hash": "35cca4cf05e1244499f82590397fc741",
+    "semantic_hash": "35cca4cf05e1244499f82590397fc741"
+  },
+  "src/web/app/components/ui/sheet.tsx": {
+    "mtime": 1784200430.2219107,
+    "ast_hash": "240dd33ab509bae7de6222cd5bbf87d9",
+    "semantic_hash": "240dd33ab509bae7de6222cd5bbf87d9"
+  },
+  "src/web/app/components/ui/sidebar.tsx": {
+    "mtime": 1784200430.2219107,
+    "ast_hash": "f8765d5dabe9a00e8324193b13174cef",
+    "semantic_hash": "f8765d5dabe9a00e8324193b13174cef"
+  },
+  "src/web/app/components/ui/skeleton.tsx": {
+    "mtime": 1784200430.2219107,
+    "ast_hash": "56314119eec106cec3841de30291f819",
+    "semantic_hash": "56314119eec106cec3841de30291f819"
+  },
+  "src/web/app/components/ui/tooltip.tsx": {
+    "mtime": 1784200430.2219107,
+    "ast_hash": "997dd7123df6d50c11370887b5a765cc",
+    "semantic_hash": "997dd7123df6d50c11370887b5a765cc"
+  },
+  "src/web/app/features/auth/hooks/api/use-user.ts": {
+    "mtime": 1784200318.3319516,
+    "ast_hash": "c67ab85665413a0999440dcd500d7f1e",
+    "semantic_hash": "c67ab85665413a0999440dcd500d7f1e"
+  },
+  "src/web/app/features/auth/pages/login.tsx": {
+    "mtime": 1784200169.410483,
+    "ast_hash": "d3c0ab7e8bd70fe08b811479be395249",
+    "semantic_hash": "d3c0ab7e8bd70fe08b811479be395249"
+  },
+  "src/web/app/features/auth/pages/logout.tsx": {
+    "mtime": 1784200248.4504662,
+    "ast_hash": "36c0b46999a3d2bb5c2d9fa96bc365f8",
+    "semantic_hash": "36c0b46999a3d2bb5c2d9fa96bc365f8"
+  },
+  "src/web/app/features/auth/pages/register.tsx": {
+    "mtime": 1784200175.2758071,
+    "ast_hash": "4b5440eb0d86d8b41468dd9e49529484",
+    "semantic_hash": "4b5440eb0d86d8b41468dd9e49529484"
+  },
+  "src/web/app/features/dashboard/pages/home.tsx": {
+    "mtime": 1784200278.6380093,
+    "ast_hash": "cc4483f5132032dc738b4a5c7a52d8c4",
+    "semantic_hash": "cc4483f5132032dc738b4a5c7a52d8c4"
+  },
+  "src/web/app/features/dashboard/pages/index.tsx": {
+    "mtime": 1784200215.9864745,
+    "ast_hash": "a99bc102662d88c02f7d612656dbdfce",
+    "semantic_hash": "a99bc102662d88c02f7d612656dbdfce"
+  },
+  "src/web/app/features/dashboard/pages/settings.tsx": {
+    "mtime": 1784200221.7148304,
+    "ast_hash": "8884b25516ac66ba6b39c53a79af0d4f",
+    "semantic_hash": "8884b25516ac66ba6b39c53a79af0d4f"
+  },
+  "src/web/app/hooks/use-mobile.ts": {
+    "mtime": 1784196316.6441314,
+    "ast_hash": "209b5193af16624cdd89d3591480dd48",
+    "semantic_hash": "209b5193af16624cdd89d3591480dd48"
+  },
+  "src/web/app/shared/layouts/dashboard-layout.tsx": {
+    "mtime": 1784200195.5863602,
+    "ast_hash": "16de8c1a82d19bbbe0fd20bc3c4cf6e4",
+    "semantic_hash": "16de8c1a82d19bbbe0fd20bc3c4cf6e4"
+  },
+  "src/web/app/shared/layouts/public-layout.tsx": {
+    "mtime": 1784200191.546845,
+    "ast_hash": "2ca8842aa21d6eefc5ea1c950f3ea363",
+    "semantic_hash": "2ca8842aa21d6eefc5ea1c950f3ea363"
+  },
+  "src/web/app/shared/utils/http.ts": {
+    "mtime": 1784200313.665716,
+    "ast_hash": "e76051da2844306951c4eedfd80639d4",
+    "semantic_hash": "e76051da2844306951c4eedfd80639d4"
+  },
+  "src/web/app/shared/utils/query-client.ts": {
+    "mtime": 1784200140.460896,
+    "ast_hash": "7fb655609f6ebe206b2e274e22f275aa",
+    "semantic_hash": "7fb655609f6ebe206b2e274e22f275aa"
+  },
+  "src/web/app/shared/utils/session.ts": {
+    "mtime": 1784200145.7350698,
+    "ast_hash": "785997b7d842b07484e8c1297e55b6f5",
+    "semantic_hash": "785997b7d842b07484e8c1297e55b6f5"
+  },
+  "src/web/app/shared/utils/utils.ts": {
+    "mtime": 1784194339.9935584,
+    "ast_hash": "5a6fd53fdcf2be529e9cc0b718fde352",
+    "semantic_hash": "5a6fd53fdcf2be529e9cc0b718fde352"
+  },
+  "src/web/components.json": {
+    "mtime": 1784200493.6928375,
+    "ast_hash": "25b302da45871a9efc75cd4db18d75f7",
+    "semantic_hash": "25b302da45871a9efc75cd4db18d75f7"
+  },
+  ".agents/skills/shadcn/SKILL.md": {
+    "mtime": 1784194504.9723556,
+    "ast_hash": "2f4fc3783284dd3ccc2640d0c93170fa",
+    "semantic_hash": "2f4fc3783284dd3ccc2640d0c93170fa"
+  },
+  ".agents/skills/shadcn/agents/openai.yml": {
+    "mtime": 1784194504.9753525,
+    "ast_hash": "a8a6560dc8e671f75672be86a079af15",
+    "semantic_hash": "a8a6560dc8e671f75672be86a079af15"
+  },
+  ".agents/skills/shadcn/cli.md": {
+    "mtime": 1784194504.980357,
+    "ast_hash": "5eeb341a5865c3fd75e2a1717f34c668",
+    "semantic_hash": "5eeb341a5865c3fd75e2a1717f34c668"
+  },
+  ".agents/skills/shadcn/customization.md": {
+    "mtime": 1784194504.9823573,
+    "ast_hash": "4092f633550842b6e866233553a0c1cb",
+    "semantic_hash": "4092f633550842b6e866233553a0c1cb"
+  },
+  ".agents/skills/shadcn/mcp.md": {
+    "mtime": 1784194505.009368,
+    "ast_hash": "9e9e06615702b185d87e6713b5ceb464",
+    "semantic_hash": "9e9e06615702b185d87e6713b5ceb464"
+  },
+  ".agents/skills/shadcn/registry.md": {
+    "mtime": 1784194505.0113723,
+    "ast_hash": "a693ab1e548de5a07cff192b802ddc3c",
+    "semantic_hash": "a693ab1e548de5a07cff192b802ddc3c"
+  },
+  ".agents/skills/shadcn/rules/base-vs-radix.md": {
+    "mtime": 1784194505.332548,
+    "ast_hash": "4c692439c8df72ec0e93c997f82935ae",
+    "semantic_hash": "4c692439c8df72ec0e93c997f82935ae"
+  },
+  ".agents/skills/shadcn/rules/chat.md": {
+    "mtime": 1784194505.33654,
+    "ast_hash": "43b95727b2f6b05e22081d3f7fe5c729",
+    "semantic_hash": "43b95727b2f6b05e22081d3f7fe5c729"
+  },
+  ".agents/skills/shadcn/rules/composition.md": {
+    "mtime": 1784194505.3445425,
+    "ast_hash": "7cbaef2d68995cc5148314d706dc0521",
+    "semantic_hash": "7cbaef2d68995cc5148314d706dc0521"
+  },
+  ".agents/skills/shadcn/rules/forms.md": {
+    "mtime": 1784194505.4640777,
+    "ast_hash": "be26c2aade3ec3455ec07d3026e44789",
+    "semantic_hash": "be26c2aade3ec3455ec07d3026e44789"
+  },
+  ".agents/skills/shadcn/rules/icons.md": {
+    "mtime": 1784194505.4680789,
+    "ast_hash": "b56104107df95ef257fdf308b7ed4491",
+    "semantic_hash": "b56104107df95ef257fdf308b7ed4491"
+  },
+  ".agents/skills/shadcn/rules/styling.md": {
+    "mtime": 1784194505.4700773,
+    "ast_hash": "a2601e13ef35777bb3aa348b41add6f7",
+    "semantic_hash": "a2601e13ef35777bb3aa348b41add6f7"
+  },
+  ".agents/skills/shadcn/assets/shadcn-small.png": {
+    "mtime": 1784194504.978354,
+    "ast_hash": "72349c6b7f303e6be598a2196391291b",
+    "semantic_hash": "72349c6b7f303e6be598a2196391291b"
+  },
+  ".agents/skills/shadcn/assets/shadcn.png": {
+    "mtime": 1784194504.9793565,
+    "ast_hash": "cb56bf002d36bb860c3d320a23bd871a",
+    "semantic_hash": "cb56bf002d36bb860c3d320a23bd871a"
   }
 }
