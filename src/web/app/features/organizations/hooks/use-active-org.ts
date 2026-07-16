@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { organizationsQueryOption } from "../api/use-organizations";
+import { organizationsQueryOption } from "~/features/organizations/hooks/api/use-organizations";
 import { getActiveOrgId } from "~/shared/utils/active-org";
+import type { Organization } from "../types";
 
 export function useActiveOrg() {
-  const { data: orgs = [] } = useQuery(organizationsQueryOption);
+  const { data: orgs = [] } = useQuery(organizationsQueryOption) as { data?: Organization[] };
   const activeOrgId = getActiveOrgId();
-  const activeOrg = orgs.find((o) => o.id === activeOrgId);
+  const activeOrg = orgs.find((o: Organization) => o.id === activeOrgId);
 
   return {
     activeOrg,

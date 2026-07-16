@@ -69,7 +69,7 @@ export function WorkflowEditor({ initialDefinition, onSave, isSaving }: Workflow
         sourceHandle: isConditional ? params.sourceHandle : undefined,
       };
 
-      setEdges((eds) => addEdge(newEdge, eds));
+      setEdges((eds) => addEdge(newEdge as any, eds as any) as any);
     },
     [nodes, setEdges]
   );
@@ -118,7 +118,7 @@ export function WorkflowEditor({ initialDefinition, onSave, isSaving }: Workflow
             updated.data = { ...n.data, ...updates.data };
           }
           if (updates.config) {
-            updated.config = { ...(n.config || {}), ...updates.config } as any;
+            updated.config = { ...((n as any).config || {}), ...updates.config } as any;
           }
           return updated;
         }
