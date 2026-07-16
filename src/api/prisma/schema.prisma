@@ -1,0 +1,176 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid @map("users__id")
+  email        String   @unique @db.VarChar(255) @map("users__email")
+  passwordHash String   @db.VarChar(255) @map("users__password_hash")
+  createdAt    DateTime @default(now()) @map("users__created_at")
+
+  sessions          UserSession[]
+  organizations     Organization[]     @relation("CreatedByUser")
+  memberOf          OrganizationMember[]
+  workflowsCreated  Workflow[]         @relation("WorkflowCreatedByUser")
+  versionsCreated   WorkflowVersion[]  @relation("VersionCreatedByUser")
+  runsTriggered     WorkflowRun[]      @relation("RunTriggeredByUser")
+
+  @@map("users")
+}
+
+model Organization {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255) @map("organizations__name")
+  createdBy String   @map("organizations__created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("organizations__created_at")
+
+  creator   User                 @relation("CreatedByUser", fields: [createdBy], references: [id])
+  members   OrganizationMember[]
+  workflows Workflow[]
+  runs      WorkflowRun[]
+
+  @@map("organizations")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("roles__created_at")
+
+  members     OrganizationMember[]
+
+  @@map("roles")
+}
+
+model OrganizationMember {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("organization_members__user_id") @db.Uuid
+  organizationId String   @map("organization_members__organization_id") @db.Uuid
+  roleId         String   @map("organization_members__role_id") @db.Uuid
+  joinedAt       DateTime @default(now()) @map("organizationmembers__joined_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role         Role         @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, organizationId])
+  @@map("organization_members")
+}
+
+model UserSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_sessions__user_id") @db.Uuid
+  token     String   @unique @db.VarChar(500)
+  expiresAt DateTime @map("user_sessions__expires_at")
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("user_sessions__created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("user_sessions")
+}
+
+model Workflow {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("workflows__tenant_id") @db.Uuid
+  name        String   @db.VarChar(255) @map("workflows__name")
+  description String?  @db.Text @map("workflows__description")
+  definition  Json     @db.JsonB @map("workflows__definition")
+  version     Int      @default(1) @map("workflows__version")
+  status      String   @default("active") @db.VarChar(50) @map("workflows__status")
+  createdBy   String   @map("workflows__created_by") @db.Uuid
+  createdAt   DateTime @default(now()) @map("workflows__created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("workflows__updated_at")
+
+  organization Organization      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  creator      User              @relation("WorkflowCreatedByUser", fields: [createdBy], references: [id])
+  versions     WorkflowVersion[]
+  triggers     WorkflowTrigger[]
+  runs         WorkflowRun[]
+
+  @@index([tenantId])
+  @@map("workflows")
+}
+
+model WorkflowVersion {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_versions__workflow_id") @db.Uuid
+  definition Json     @db.JsonB @map("workflow_versions__definition")
+  version    Int      @map("workflow_versions__version")
+  createdBy  String   @map("workflow_versions__created_by") @db.Uuid
+  createdAt  DateTime @default(now()) @map("workflow_versions__created_at")
+
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  creator    User     @relation("VersionCreatedByUser", fields: [createdBy], references: [id])
+
+  @@index([workflowId])
+  @@map("workflow_versions")
+}
+
+model WorkflowTrigger {
+  id           String   @id @default(uuid()) @db.Uuid
+  workflowId   String   @map("workflow_triggers__workflow_id") @db.Uuid
+  triggerType  String   @map("workflow_triggers__trigger_type") @db.VarChar(50)
+  config       Json     @db.JsonB @map("workflow_triggers__config")
+  isActive     Boolean  @default(true) @map("workflow_triggers__is_active")
+  createdAt    DateTime @default(now()) @map("workflow_triggers__created_at")
+
+  workflow     Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+  @@index([triggerType])
+  @@map("workflow_triggers")
+}
+
+model WorkflowRun {
+  id              String    @id @default(uuid()) @db.Uuid
+  workflowId      String    @map("workflow_runs__workflow_id") @db.Uuid
+  tenantId        String    @map("workflow_runs__tenant_id") @db.Uuid
+  triggeredBy     String?   @map("workflow_runs__triggered_by") @db.Uuid
+  triggerType     String?   @map("workflow_runs__trigger_type") @db.VarChar(50)
+  status          String    @default("pending") @db.VarChar(50) @map("workflow_runs__status")
+  startedAt       DateTime? @map("workflow_runs__started_at")
+  endedAt         DateTime? @map("workflow_runs__ended_at")
+  totalDurationMs Int?      @map("workflow_runs__total_duration_ms")
+  errorMessage    String?   @map("workflow_runs__error_message") @db.Text
+  aiDiagnosis     String?   @map("workflow_runs__ai_diagnosis") @db.Text
+  createdAt       DateTime  @default(now()) @map("workflow_runs__created_at")
+
+  workflow     Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  triggerer    User?    @relation("RunTriggeredByUser", fields: [triggeredBy], references: [id])
+  stepLogs     StepLog[]
+
+  @@index([workflowId])
+  @@index([tenantId])
+  @@index([createdAt(sort: Desc)])
+  @@map("workflow_runs")
+}
+
+model StepLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  runId        String   @map("step_logs__run_id") @db.Uuid
+  stepId       String   @map("step_logs__step_id") @db.VarChar(255)
+  stepName     String   @map("step_logs__step_name") @db.VarChar(255)
+  stepType     String   @map("step_logs__step_type") @db.VarChar(50)
+  status       String   @db.VarChar(50)
+  input        Json?    @db.JsonB
+  output       String?  @db.Text
+  errorMessage String?  @map("step_logs__error_message") @db.Text
+  durationMs   Int?     @map("step_logs__duration_ms")
+  retryCount   Int      @default(0) @map("step_logs__retry_count")
+  executedAt   DateTime @map("step_logs__executed_at")
+  createdAt    DateTime @default(now()) @map("step_logs__created_at")
+
+  run          WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+  @@index([executedAt(sort: Desc)])
+  @@map("step_logs")
+}
