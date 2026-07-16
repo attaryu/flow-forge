@@ -2289,34 +2289,154 @@
       "norm_label": "jest"
     },
     {
-      "label": "AppController",
-      "file_type": "code",
-      "source_file": "src/api/src/app.controller.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "id": "src_api_src_app_controller_appcontroller",
-      "community": 32,
-      "norm_label": "appcontroller"
-    },
-    {
       "label": "AppModule",
       "file_type": "code",
       "source_file": "src/api/src/app.module.ts",
-      "source_location": "L7",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "src_api_src_app_module_appmodule",
       "community": 33,
       "norm_label": "appmodule"
     },
     {
-      "label": "AppService",
+      "label": "AuthModule",
       "file_type": "code",
-      "source_file": "src/api/src/app.service.ts",
+      "source_file": "src/api/src/features/auth/auth.module.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_auth_module_authmodule",
+      "community": 34,
+      "norm_label": "authmodule"
+    },
+    {
+      "label": "AuthController",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/controllers/auth.controller.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_controllers_auth_controller_authcontroller",
+      "community": 35,
+      "norm_label": "authcontroller"
+    },
+    {
+      "label": "AuthResponseDto",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/dto/auth-response.dto.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "src_api_src_app_service_appservice",
-      "community": 34,
-      "norm_label": "appservice"
+      "id": "src_api_src_features_auth_dto_auth_response_dto_authresponsedto",
+      "community": 23,
+      "norm_label": "authresponsedto"
+    },
+    {
+      "label": "LoginInputDto",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/dto/login-input.dto.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_dto_login_input_dto_logininputdto",
+      "community": 36,
+      "norm_label": "logininputdto"
+    },
+    {
+      "label": "RegisterInputDto",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/dto/register-input.dto.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_dto_register_input_dto_registerinputdto",
+      "community": 37,
+      "norm_label": "registerinputdto"
+    },
+    {
+      "label": "UserResponseDto",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/dto/user-response.dto.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_dto_user_response_dto_userresponsedto",
+      "community": 23,
+      "norm_label": "userresponsedto"
+    },
+    {
+      "label": "JwtAuthGuard",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/guards/jwt-auth.guard.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_guards_jwt_auth_guard_jwtauthguard",
+      "community": 38,
+      "norm_label": "jwtauthguard"
+    },
+    {
+      "label": "UserSessionWithUser",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/repositories/auth.repository.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_repositories_auth_repository_usersessionwithuser",
+      "community": 40,
+      "norm_label": "usersessionwithuser"
+    },
+    {
+      "label": "AuthRepository",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/repositories/auth.repository.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_repositories_auth_repository_authrepository",
+      "community": 39,
+      "norm_label": "authrepository"
+    },
+    {
+      "label": "OnboardingRepository",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/repositories/onboarding.repository.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_repositories_onboarding_repository_onboardingrepository",
+      "community": 41,
+      "norm_label": "onboardingrepository"
+    },
+    {
+      "label": "AuthService",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/services/auth.service.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_services_auth_service_authservice",
+      "community": 42,
+      "norm_label": "authservice"
+    },
+    {
+      "label": "OnboardingService",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/services/onboarding.service.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_services_onboarding_service_onboardingservice",
+      "community": 43,
+      "norm_label": "onboardingservice"
+    },
+    {
+      "label": "JwtStrategy",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/strategies/jwt.strategy.ts",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_strategies_jwt_strategy_jwtstrategy",
+      "community": 44,
+      "norm_label": "jwtstrategy"
+    },
+    {
+      "label": "DurationUtils",
+      "file_type": "code",
+      "source_file": "src/api/src/features/auth/utils/duration.utils.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_api_src_features_auth_utils_duration_utils_durationutils",
+      "community": 45,
+      "norm_label": "durationutils"
     },
     {
       "label": "PrismaModule",
@@ -2325,17 +2445,17 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_api_src_shared_providers_prisma_prisma_module_prismamodule",
-      "community": 35,
+      "community": 46,
       "norm_label": "prismamodule"
     },
     {
       "label": "PrismaService",
       "file_type": "code",
       "source_file": "src/api/src/shared/providers/prisma/prisma.service.ts",
-      "source_location": "L4",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "src_api_src_shared_providers_prisma_prisma_service_prismaservice",
-      "community": 36,
+      "community": 47,
       "norm_label": "prismaservice"
     },
     {
@@ -2345,7 +2465,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_web_app_root_layout",
-      "community": 39,
+      "community": 50,
       "norm_label": "layout"
     },
     {
@@ -2355,7 +2475,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_web_app_root_app",
-      "community": 37,
+      "community": 48,
       "norm_label": "app"
     },
     {
@@ -2365,7 +2485,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_web_app_root_errorboundary",
-      "community": 38,
+      "community": 49,
       "norm_label": "errorboundary"
     },
     {
@@ -2375,7 +2495,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_web_app_routes_home_meta",
-      "community": 41,
+      "community": 52,
       "norm_label": "meta"
     },
     {
@@ -2385,7 +2505,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_web_app_routes_home_home",
-      "community": 40,
+      "community": 51,
       "norm_label": "home"
     },
     {
@@ -2395,7 +2515,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_worker_src_app_controller_appcontroller",
-      "community": 44,
+      "community": 55,
       "norm_label": "appcontroller"
     },
     {
@@ -2405,7 +2525,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_worker_src_app_module_appmodule",
-      "community": 45,
+      "community": 56,
       "norm_label": "appmodule"
     },
     {
@@ -2415,7 +2535,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_worker_src_app_service_appservice",
-      "community": 46,
+      "community": 57,
       "norm_label": "appservice"
     },
     {
@@ -2506,7 +2626,7 @@
       "author": null,
       "contributor": null,
       "id": "_agents_skills_react_router_references_data_mode_routerprovider",
-      "community": 23,
+      "community": 24,
       "norm_label": "routerprovider"
     },
     {
@@ -2532,7 +2652,7 @@
       "author": null,
       "contributor": null,
       "id": "_agents_skills_react_router_references_declarative_mode_routes",
-      "community": 25,
+      "community": 26,
       "norm_label": "routes"
     },
     {
@@ -2545,7 +2665,7 @@
       "author": null,
       "contributor": null,
       "id": "_agents_skills_react_router_references_declarative_mode_route",
-      "community": 24,
+      "community": 25,
       "norm_label": "route"
     },
     {
@@ -2571,7 +2691,7 @@
       "author": null,
       "contributor": null,
       "id": "_agents_skills_react_router_references_framework_mode_vite_plugin",
-      "community": 26,
+      "community": 27,
       "norm_label": "react router vite plugin"
     },
     {
@@ -2597,7 +2717,7 @@
       "author": null,
       "contributor": null,
       "id": "agents_graphify",
-      "community": 27,
+      "community": 28,
       "norm_label": "graphify"
     },
     {
@@ -2693,7 +2813,7 @@
       "author": null,
       "contributor": null,
       "id": "docs_architecture_decision_dag_validation",
-      "community": 28,
+      "community": 29,
       "norm_label": "dag validation"
     },
     {
@@ -2707,7 +2827,7 @@
       "author": null,
       "contributor": null,
       "id": "docs_architecture_decision_non_blocking_delay",
-      "community": 29,
+      "community": 30,
       "norm_label": "non-blocking delay"
     },
     {
@@ -2813,7 +2933,7 @@
       "author": null,
       "contributor": null,
       "id": "docs_database_schema_users_table",
-      "community": 30,
+      "community": 31,
       "norm_label": "users table"
     },
     {
@@ -2869,6 +2989,19 @@
       "norm_label": "step_logs table"
     },
     {
+      "label": "pnpm Workspace Configuration",
+      "file_type": "document",
+      "source_file": "pnpm-workspace.yaml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "pnpm_workspace_workspaceconfig",
+      "community": 32,
+      "norm_label": "pnpm workspace configuration"
+    },
+    {
       "label": "NestJS API Server",
       "file_type": "concept",
       "source_file": "src/api/README.md",
@@ -2917,7 +3050,7 @@
       "author": null,
       "contributor": null,
       "id": "src_web_app_welcome_logo_dark_react_router_logo",
-      "community": 42,
+      "community": 53,
       "norm_label": "react router dark logo"
     },
     {
@@ -2930,21 +3063,8 @@
       "author": null,
       "contributor": null,
       "id": "src_web_app_welcome_logo_light_logo",
-      "community": 43,
+      "community": 54,
       "norm_label": "react router light logo"
-    },
-    {
-      "label": "pnpm Workspace Configuration",
-      "file_type": "document",
-      "source_file": "pnpm-workspace.yaml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "pnpm_workspace_workspaceconfig",
-      "community": 31,
-      "norm_label": "pnpm workspace configuration"
     }
   ],
   "links": [
@@ -5395,6 +5515,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/src/features/auth/dto/auth-response.dto.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_api_src_features_auth_dto_auth_response_dto_authresponsedto",
+      "target": "src_api_src_features_auth_dto_user_response_dto_userresponsedto",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
@@ -5639,5 +5771,5 @@
       "source_file": "docs/business-logic.md"
     }
   ],
-  "built_at_commit": "bbd34a206e606e85feab25dc03030379ffe51a9c"
+  "built_at_commit": "fa5687ca5ae3181c6f7478271e4e5cc47a368104"
 }
