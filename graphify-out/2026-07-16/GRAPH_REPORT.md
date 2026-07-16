@@ -1,11 +1,11 @@
 # Graph Report - flow-forge  (2026-07-16)
 
 ## Corpus Check
-- 140 files · ~39,415 words
+- 116 files · ~34,540 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1314 nodes · 1905 edges · 120 communities (83 shown, 37 thin omitted)
+- 1208 nodes · 1648 edges · 104 communities (77 shown, 27 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 40 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
@@ -109,31 +109,15 @@
 - Customizing Components
 - Icons
 - Framework Mode (Full-Stack)
-- app-sidebar.tsx
-- node-config-panel.tsx
-- organizations.controller.ts
-- settings.tsx
-- cn
-- package.json
-- JwtStrategy
-- class-variance-authority
-- clsx
-- isbot
-- lucide-react
-- react-dom
-- react-router
-- @react-router/serve
-- shadcn
-- tw-animate-css
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 103 edges
+1. `cn()` - 77 edges
 2. `compilerOptions` - 23 edges
 3. `compilerOptions` - 22 edges
-4. `PrismaProvider` - 17 edges
-5. `UserResponseDto` - 16 edges
-6. `AuthService` - 16 edges
-7. `compilerOptions` - 15 edges
+4. `AuthService` - 16 edges
+5. `PrismaProvider` - 15 edges
+6. `compilerOptions` - 15 edges
+7. `UserResponseDto` - 14 edges
 8. `React Server Components (RSC)` - 14 edges
 9. `scripts` - 13 edges
 10. `scripts` - 13 edges
@@ -164,7 +148,7 @@
 - **core_design_principles** — docs_architecture_decision_multi_tenancy, docs_architecture_decision_per_node_execution, docs_architecture_decision_separate_queues, docs_architecture_decision_state_in_db, docs_architecture_decision_realtime_updates [EXTRACTED 1.00]
 - **workflow_execution_pipeline** — docs_business_logic_workflow_lifecycle, docs_architecture_decision_bullmq, docs_architecture_decision_per_node_execution, docs_architecture_decision_realtime_updates, docs_database_schema_workflow_runs [INFERRED 0.85]
 
-## Communities (120 total, 37 thin omitted)
+## Communities (104 total, 27 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.04
@@ -179,8 +163,8 @@ Cohesion: 0.05
 Nodes (43): author, dependencies, @nestjs/common, @nestjs/core, @nestjs/platform-express, reflect-metadata, rxjs, description (+35 more)
 
 ### Community 3 - "devDependencies"
-Cohesion: 0.12
-Nodes (17): @react-router/dev, devDependencies, @react-router/dev, tailwindcss, @tailwindcss/vite, @types/node, @types/react, @types/react-dom (+9 more)
+Cohesion: 0.08
+Nodes (25): @react-router/dev, devDependencies, @react-router/dev, tailwindcss, @tailwindcss/vite, @types/node, @types/react, @types/react-dom (+17 more)
 
 ### Community 4 - "Chat and Messaging UI"
 Cohesion: 0.25
@@ -215,12 +199,12 @@ Cohesion: 0.08
 Nodes (24): compilerOptions, allowSyntheticDefaultImports, declaration, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames, incremental (+16 more)
 
 ### Community 12 - "auth.controller.ts"
-Cohesion: 0.22
-Nodes (9): LoginInputDto, IsEmail, IsNotEmpty, IsString, UserResponseDto, JwtAuthGuard, Injectable, TokenPayload (+1 more)
+Cohesion: 0.21
+Nodes (10): AuthResponseDto, LoginInputDto, IsEmail, IsNotEmpty, IsString, UserResponseDto, JwtAuthGuard, Injectable (+2 more)
 
 ### Community 13 - "AuthService"
 Cohesion: 0.12
-Nodes (9): AuthResponseDto, AuthRepository, Injectable, AuthService, Injectable, OnboardingService, Injectable, DurationUtils (+1 more)
+Nodes (6): AuthRepository, Injectable, AuthService, Injectable, JwtStrategy, Injectable
 
 ### Community 14 - "README.md"
 Cohesion: 0.06
@@ -231,20 +215,20 @@ Cohesion: 0.21
 Nodes (8): AppController, Controller, Get, AppModule, Module, AppService, Injectable, bootstrap()
 
 ### Community 16 - "PrismaProvider"
-Cohesion: 0.18
-Nodes (5): UserSessionWithUser, OnboardingRepository, Injectable, PrismaProvider, Injectable
+Cohesion: 0.24
+Nodes (3): UserSessionWithUser, PrismaProvider, Injectable
 
 ### Community 17 - "workflows.controller.ts"
 Cohesion: 0.07
-Nodes (28): Delete, Param, Patch, Body, Controller, Get, HttpCode, UseGuards (+20 more)
+Nodes (30): Delete, Param, Patch, CurrentUser, Body, Controller, Get, HttpCode (+22 more)
 
 ### Community 18 - "AuthController"
 Cohesion: 0.24
 Nodes (9): Req, Res, AuthController, Body, Controller, Get, HttpCode, Post (+1 more)
 
 ### Community 19 - "auth.module.ts"
-Cohesion: 0.17
-Nodes (12): Global, AppModule, Module, AuthModule, Module, OrganizationsModule, Module, Module (+4 more)
+Cohesion: 0.16
+Nodes (12): Global, AppModule, Module, AuthModule, Module, DurationUtils, Injectable, Module (+4 more)
 
 ### Community 20 - "package.json"
 Cohesion: 0.18
@@ -291,20 +275,20 @@ Cohesion: 0.50
 Nodes (3): plugin, $schema, .opencode/plugins/graphify.js
 
 ### Community 31 - "OnboardingRepository"
-Cohesion: 0.10
-Nodes (22): AppSidebar(), Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator() (+14 more)
+Cohesion: 0.25
+Nodes (4): OnboardingRepository, Injectable, OnboardingService, Injectable
 
 ### Community 59 - "dependencies"
-Cohesion: 0.12
-Nodes (17): @base-ui/react, @fontsource-variable/geist, ky, react-hook-form, @react-router/node, dependencies, @base-ui/react, @fontsource-variable/geist (+9 more)
+Cohesion: 0.06
+Nodes (33): @base-ui/react, class-variance-authority, clsx, @fontsource-variable/geist, isbot, ky, lucide-react, react-dom (+25 more)
 
 ### Community 62 - "cn"
-Cohesion: 0.07
-Nodes (34): react, Sheet(), SheetContent(), SheetDescription(), SheetFooter(), SheetHeader(), SheetOverlay(), SheetTitle() (+26 more)
+Cohesion: 0.05
+Nodes (71): react, AppSidebar(), AppSidebarProps, SidebarUser, Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup() (+63 more)
 
 ### Community 63 - "settings.tsx"
-Cohesion: 0.06
-Nodes (33): userQueryOption, Login(), clientAction(), Register(), clientLoader(), organizationsQueryOption, Organization, ConditionalBranchNode() (+25 more)
+Cohesion: 0.08
+Nodes (33): Button(), buttonVariants, Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader() (+25 more)
 
 ### Community 64 - "components.json"
 Cohesion: 0.09
@@ -407,7 +391,7 @@ Cohesion: 0.33
 Nodes (6): Accordion API Differences, asChild vs render Composition, Base vs Radix API Differences, nativeButton Prop, Select API Differences, Slider API Differences
 
 ### Community 95 - "RegisterInputDto"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (6): MinLength, RegisterInputDto, IsEmail, IsNotEmpty, IsOptional, IsString
 
 ### Community 96 - "React Router"
@@ -434,49 +418,25 @@ Nodes (4): Icons, Icons in Button use data-icon attribute, No sizing classes on 
 Cohesion: 0.67
 Nodes (3): Framework Mode (Full-Stack), Generated Route Type Safety, Rendering Strategy
 
-### Community 104 - "app-sidebar.tsx"
-Cohesion: 0.12
-Nodes (21): AppSidebarProps, SidebarUser, Badge(), badgeVariants, DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuGroup() (+13 more)
-
-### Community 105 - "node-config-panel.tsx"
-Cohesion: 0.14
-Nodes (18): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, Button(), buttonVariants, Input() (+10 more)
-
-### Community 106 - "organizations.controller.ts"
-Cohesion: 0.15
-Nodes (11): CurrentUser, OrganizationsController, Controller, Get, UseGuards, OrganizationResponseDto, OrganizationsRepository, Injectable (+3 more)
-
-### Community 107 - "settings.tsx"
-Cohesion: 0.15
-Nodes (17): Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle(), Separator() (+9 more)
-
-### Community 108 - "cn"
-Cohesion: 0.21
-Nodes (16): Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage(), SelectContent(), SelectGroup() (+8 more)
-
-### Community 109 - "package.json"
-Cohesion: 0.22
-Nodes (8): name, private, scripts, build, dev, start, typecheck, type
-
 ## Knowledge Gaps
-- **584 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `name`, `version`, `description` (+579 more)
+- **578 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `name`, `version`, `description` (+573 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `cn()` connect `cn` to `app-sidebar.tsx`, `node-config-panel.tsx`, `settings.tsx`, `cn`, `OnboardingRepository`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `package.json`, `class-variance-authority`, `clsx`, `isbot`, `lucide-react`, `react-dom`, `react-router`, `@react-router/serve`, `shadcn`, `tw-animate-css`, `cn`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
-- **Why does `react` connect `cn` to `node-config-panel.tsx`, `dependencies`, `OnboardingRepository`?**
+- **Why does `dependencies` connect `dependencies` to `devDependencies`, `cn`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `react` connect `cn` to `dependencies`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `settings.tsx`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `$schema`, `.opencode/plugins/graphify.js`, `name` to the rest of the system?**
-  _584 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _578 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.045454545454545456 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
