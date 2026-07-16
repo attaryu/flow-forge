@@ -20,7 +20,7 @@ export const http = ky.create({
   credentials: "include", // sends cookies (like refreshToken) on every request
   hooks: {
     beforeRequest: [
-      (request) => {
+      ({ request }) => {
         const token = getToken();
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);
@@ -32,7 +32,7 @@ export const http = ky.create({
       },
     ],
     afterResponse: [
-      async (request, options, response) => {
+      async ({ request, options, response }) => {
         if (response.status === 401 && !request.url.includes("/auth/login") && !request.url.includes("/auth/register")) {
           if (isRefreshing) {
             return new Promise<string>((resolve, reject) => {
