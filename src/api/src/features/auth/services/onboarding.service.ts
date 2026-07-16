@@ -1,10 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
-import { AuthResponseDto } from '@/features/auth/dto/auth-response.dto';
-import { RegisterInputDto } from '@/features/auth/dto/register-input.dto';
-import { OnboardingRepository } from '@/features/auth/repositories/onboarding.repository';
-import { AuthService } from '@/features/auth/services/auth.service';
+import { AuthResponseDto } from '../dto/auth-response.dto';
+import { RegisterInputDto } from '../dto/register-input.dto';
+import { OnboardingRepository } from '../repositories/onboarding.repository';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class OnboardingService {

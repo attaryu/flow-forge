@@ -7,11 +7,11 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
-import { AuthResponseDto } from '@/features/auth/dto/auth-response.dto';
-import { LoginInputDto } from '@/features/auth/dto/login-input.dto';
-import { UserResponseDto } from '@/features/auth/dto/user-response.dto';
-import { AuthRepository } from '@/features/auth/repositories/auth.repository';
-import { DurationUtils } from '@/features/auth/utils/duration.utils';
+import { AuthResponseDto } from '../dto/auth-response.dto';
+import { LoginInputDto } from '../dto/login-input.dto';
+import { UserResponseDto } from '../dto/user-response.dto';
+import { AuthRepository } from '../repositories/auth.repository';
+import { DurationUtils } from '../utils/duration.utils';
 
 interface TokenPayload {
   sub: string;

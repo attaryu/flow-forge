@@ -11,14 +11,14 @@ import {
 } from '@nestjs/common';
 import * as express from 'express';
 
-import { CurrentUser } from '@/features/auth/decorators/current-user.decorator';
-import { AuthResponseDto } from '@/features/auth/dto/auth-response.dto';
-import { LoginInputDto } from '@/features/auth/dto/login-input.dto';
-import { RegisterInputDto } from '@/features/auth/dto/register-input.dto';
-import { UserResponseDto } from '@/features/auth/dto/user-response.dto';
-import { JwtAuthGuard } from '@/features/auth/guards/jwt-auth.guard';
-import { AuthService } from '@/features/auth/services/auth.service';
-import { OnboardingService } from '@/features/auth/services/onboarding.service';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { AuthResponseDto } from '../dto/auth-response.dto';
+import { LoginInputDto } from '../dto/login-input.dto';
+import { RegisterInputDto } from '../dto/register-input.dto';
+import { UserResponseDto } from '../dto/user-response.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { AuthService } from '../services/auth.service';
+import { OnboardingService } from '../services/onboarding.service';
 
 @Controller('auth')
 export class AuthController {

@@ -3,8 +3,8 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaProvider } from '@/shared/providers/prisma/prisma.provider';
-import { UserResponseDto } from '@/features/auth/dto/user-response.dto';
+import { PrismaProvider } from '../../../shared/providers/prisma/prisma.provider';
+import { UserResponseDto } from '../dto/user-response.dto';
 
 @Injectable()
 export class OnboardingRepository {

@@ -3,14 +3,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { AuthController } from '@/features/auth/controllers/auth.controller';
-import { AuthRepository } from '@/features/auth/repositories/auth.repository';
-import { OnboardingRepository } from '@/features/auth/repositories/onboarding.repository';
-import { AuthService } from '@/features/auth/services/auth.service';
-import { OnboardingService } from '@/features/auth/services/onboarding.service';
-import { JwtStrategy } from '@/features/auth/strategies/jwt.strategy';
-import { DurationUtils } from '@/features/auth/utils/duration.utils';
-import { PrismaModule } from '@/shared/providers/prisma/prisma.module';
+import { AuthController } from './controllers/auth.controller';
+import { AuthRepository } from './repositories/auth.repository';
+import { OnboardingRepository } from './repositories/onboarding.repository';
+import { AuthService } from './services/auth.service';
+import { OnboardingService } from './services/onboarding.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { DurationUtils } from './utils/duration.utils';
+import { PrismaModule } from '../../shared/providers/prisma/prisma.module';
 
 @Module({
   imports: [

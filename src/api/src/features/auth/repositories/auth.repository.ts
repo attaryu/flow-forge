@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaProvider } from '@/shared/providers/prisma/prisma.provider';
+import { PrismaProvider } from '../../../shared/providers/prisma/prisma.provider';
 import { User, UserSession } from '@prisma/client';
 
 export type UserSessionWithUser = UserSession & { user: User };
