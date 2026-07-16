@@ -75,7 +75,8 @@ def main():
         'input_tokens': 0,
         'output_tokens': 0,
     }
-    print(f'[graphify update] Merged extraction: {len(merged_nodes)} nodes, {len(merged_edges)} edges')
+    merged_edges_list = ast_edges + sem_edges
+    print(f'[graphify update] Merged extraction: {len(merged_nodes)} nodes, {len(merged_edges_list)} edges')
 
     # --- Merge into existing graph ---
     old_path = Path('graphify-out/graph.json')
