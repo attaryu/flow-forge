@@ -7,6 +7,7 @@ import { Badge } from "~/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -58,29 +59,31 @@ export function OrgSwitcher() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Building2 className="h-4 w-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="font-semibold truncate">
-                  {activeOrg?.name || "Select Organization"}
-                </span>
-                <span className="text-xs truncate text-muted-foreground flex items-center gap-1.5 capitalize">
-                  {activeOrg?.role || "Member"}
-                  {activeOrg && (
-                    <Badge variant="outline" className="h-4 px-1 text-[10px] uppercase font-bold py-0">
-                      {activeOrg.role}
-                    </Badge>
-                  )}
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Building2 className="h-4 w-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="font-semibold truncate">
+                {activeOrg?.name || "Select Organization"}
+              </span>
+              <span className="text-xs truncate text-muted-foreground flex items-center gap-1.5 capitalize">
+                {activeOrg?.role || "Member"}
+                {activeOrg && (
+                  <Badge variant="outline" className="h-4 px-1 text-[10px] uppercase font-bold py-0">
+                    {activeOrg.role}
+                  </Badge>
+                )}
+              </span>
+            </div>
+            <ChevronsUpDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--trigger-width] min-w-56 rounded-lg"
@@ -88,9 +91,11 @@ export function OrgSwitcher() {
             side="bottom"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Organizations
-            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Organizations
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             {orgs.map((org) => (
               <DropdownMenuItem
