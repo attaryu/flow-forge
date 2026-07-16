@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from './generated/client';
+import { PrismaClient } from '@prisma/client';
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
@@ -13,15 +13,18 @@ async function main() {
   const roles = [
     {
       name: 'owner',
-      description: 'Organization owner with full access control, billing, and settings management.',
+      description:
+        'Organization owner with full access control, billing, and settings management.',
     },
     {
       name: 'admin',
-      description: 'Organization administrator who can manage workflows, integrations, and invite members.',
+      description:
+        'Organization administrator who can manage workflows, integrations, and invite members.',
     },
     {
       name: 'member',
-      description: 'Regular organization member who can view and run workflows.',
+      description:
+        'Regular organization member who can view and run workflows.',
     },
   ];
 

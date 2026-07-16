@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/shared/providers/prisma/prisma.service';
-import { User, UserSession } from '../../../../prisma/generated/client';
+import { PrismaProvider } from '@/shared/providers/prisma/prisma.provider';
+import { User, UserSession } from '@prisma/client';
 
 export type UserSessionWithUser = UserSession & { user: User };
 
 @Injectable()
 export class AuthRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async findUserByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({

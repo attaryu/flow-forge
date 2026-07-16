@@ -3,12 +3,12 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaService } from '@/shared/providers/prisma/prisma.service';
+import { PrismaProvider } from '@/shared/providers/prisma/prisma.provider';
 import { UserResponseDto } from '@/features/auth/dto/user-response.dto';
 
 @Injectable()
 export class OnboardingRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async registerUserAndOrganization(
     email: string,
