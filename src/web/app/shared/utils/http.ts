@@ -1,5 +1,6 @@
 import ky from "ky";
 import { getToken, setSession, clearSession } from "./session";
+import { getActiveOrgId } from "./active-org";
 import type { User } from "./session";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
@@ -15,19 +16,23 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 export const http = ky.create({
-  prefixUrl: API_URL,
+  prefix: API_URL,
   credentials: "include", // sends cookies (like refreshToken) on every request
   hooks: {
     beforeRequest: [
-      (request) => {
+      ({ request }) => {
         const token = getToken();
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);
         }
+        const orgId = getActiveOrgId();
+        if (orgId) {
+          request.headers.set("X-Organization-Id", orgId);
+        }
       },
     ],
     afterResponse: [
-      async (request, options, response) => {
+      async ({ request, options, response }) => {
         if (response.status === 401 && !request.url.includes("/auth/login") && !request.url.includes("/auth/register")) {
           if (isRefreshing) {
             return new Promise<string>((resolve, reject) => {
