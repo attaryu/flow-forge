@@ -152,34 +152,43 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
 
               {/* Step Logs List */}
               <div className="space-y-3">
-                <h3 className="text-sm font-semibold tracking-tight">Step Execution Logs</h3>
+                <h3 className="text-sm font-semibold tracking-tight text-slate-800">Step Execution Logs</h3>
                 {!run.stepLogs || run.stepLogs.length === 0 ? (
                   <div className="p-8 border border-dashed rounded-lg text-center text-xs text-muted-foreground bg-muted/10">
                     No step logs recorded for this execution.
                   </div>
                 ) : (
-                  <div className="border border-muted rounded-lg divide-y divide-muted bg-card">
+                  <div className="space-y-2.5">
                     {run.stepLogs.map((log) => {
                       const isExpanded = !!expandedSteps[log.id];
                       return (
-                        <div key={log.id} className="flex flex-col">
+                        <div 
+                          key={log.id} 
+                          className={`border rounded-lg overflow-hidden transition-all duration-200 ${
+                            log.status === "failed" 
+                              ? "border-rose-200 bg-rose-50/20" 
+                              : log.status === "running"
+                                ? "border-blue-200 bg-blue-50/10"
+                                : "border-slate-200 bg-white hover:border-slate-300"
+                          }`}
+                        >
                           {/* Log Row Header */}
                           <div 
                             onClick={() => toggleStep(log.id)}
-                            className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-50 transition-colors select-none"
+                            className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-50/50 transition-colors select-none"
                           >
-                            <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex items-center gap-2.5 min-w-0">
                               {getStatusIcon(log.status)}
                               <span className="text-xs font-semibold truncate text-slate-800">
                                 {log.stepName || log.stepId}
                               </span>
-                              <Badge variant="outline" className="text-[10px] px-1 py-0 font-mono">
+                              <Badge variant="outline" className="text-[9px] px-1 py-0 font-mono border-slate-250 text-slate-500 bg-slate-50">
                                 {log.stepType}
                               </Badge>
                             </div>
-                            <div className="flex items-center gap-3 text-[11px] text-muted-foreground ml-auto">
+                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground ml-auto">
                               {log.durationMs !== undefined && (
-                                <span className="font-medium">{log.durationMs}ms</span>
+                                <span className="font-mono text-slate-600">{log.durationMs}ms</span>
                               )}
                               {log.retryCount > 0 && (
                                 <Badge variant="secondary" className="text-[9px] py-0 px-1">
@@ -187,29 +196,29 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
                                 </Badge>
                               )}
                               {isExpanded ? (
-                                <ChevronDown className="h-4 w-4" />
+                                <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
                               ) : (
-                                <ChevronRight className="h-4 w-4" />
+                                <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
                               )}
                             </div>
                           </div>
 
-                          {/* Expandable Log Details */}
+                          {/* Expandable Log Details (Vercel Console Style - Light Theme) */}
                           {isExpanded && (
-                            <div className="p-3 bg-slate-50 border-t border-muted text-[11px] space-y-3">
+                            <div className="px-3 pb-3 pt-0 border-t border-slate-100 bg-slate-50/80 font-mono text-[10px] space-y-2.5">
                               {log.errorMessage && (
-                                <div className="space-y-1">
-                                  <span className="font-semibold text-rose-800">Error:</span>
-                                  <p className="font-mono bg-rose-50 border border-rose-100 p-2 rounded text-rose-700 whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                <div className="space-y-1 pt-2.5">
+                                  <span className="font-semibold text-rose-700">Execution Fail Exception:</span>
+                                  <pre className="bg-rose-50 border border-rose-200 p-2.5 rounded text-rose-700 overflow-x-auto whitespace-pre-wrap leading-relaxed select-text">
                                     {log.errorMessage}
-                                  </p>
+                                  </pre>
                                 </div>
                               )}
 
                               {/* Input Data */}
-                              <div className="space-y-1">
-                                <span className="font-semibold text-slate-700">Input Data:</span>
-                                <pre className="font-mono bg-white border border-slate-200 p-2 rounded overflow-x-auto whitespace-pre-wrap max-h-48 select-text">
+                              <div className={log.errorMessage ? "space-y-1" : "space-y-1 pt-2.5"}>
+                                <span className="font-semibold text-slate-700">Request Object Payload:</span>
+                                <pre className="bg-white border border-slate-200 p-2.5 rounded text-slate-800 overflow-x-auto whitespace-pre-wrap leading-relaxed select-text">
                                   {log.input 
                                     ? JSON.stringify(log.input, null, 2) 
                                     : "null"}
@@ -217,19 +226,21 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
                               </div>
 
                               {/* Output Data */}
-                              <div className="space-y-1">
-                                <span className="font-semibold text-slate-700">Output Data:</span>
-                                <pre className="font-mono bg-white border border-slate-200 p-2 rounded overflow-x-auto whitespace-pre-wrap max-h-48 select-text">
-                                  {log.output 
-                                    ? (typeof log.output === "string" && (log.output.startsWith("{") || log.output.startsWith("["))
-                                      ? JSON.stringify(JSON.parse(log.output), null, 2)
-                                      : typeof log.output === "string" 
-                                        ? log.output
-                                        : JSON.stringify(log.output, null, 2)
-                                    ) 
-                                    : "null"}
-                                </pre>
-                              </div>
+                              {log.status === "success" && (
+                                <div className="space-y-1">
+                                  <span className="font-semibold text-slate-700">Response Object Payload:</span>
+                                  <pre className="bg-white border border-slate-200 p-2.5 rounded text-slate-800 overflow-x-auto whitespace-pre-wrap leading-relaxed select-text">
+                                    {log.output 
+                                      ? (typeof log.output === "string" && (log.output.startsWith("{") || log.output.startsWith("["))
+                                        ? JSON.stringify(JSON.parse(log.output), null, 2)
+                                        : typeof log.output === "string" 
+                                          ? log.output
+                                          : JSON.stringify(log.output, null, 2)
+                                      ) 
+                                      : "null"}
+                                  </pre>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
