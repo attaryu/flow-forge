@@ -15,7 +15,7 @@ import type { WorkflowNode, DbEdge, WorkflowDefinition } from '../types';
 import {
 	validateWorkflow,
 	type ValidationResult,
-} from '../utils/workflow-validator';
+} from '@flow-forge/shared-validation';
 import { calculateLayout, type NodePosition } from '../utils/workflow-layout';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/shared/utils/utils';
