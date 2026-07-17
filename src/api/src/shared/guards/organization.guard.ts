@@ -24,7 +24,11 @@ export class OrganizationGuard implements CanActivate {
       throw new ForbiddenException('User authentication required');
     }
 
-    const organizationId = request.headers['x-organization-id'] as string;
+    let organizationId = request.headers['x-organization-id'] as string;
+    if (!organizationId && request.query && request.query.orgId) {
+      organizationId = request.query.orgId as string;
+    }
+
     if (!organizationId) {
       throw new BadRequestException('X-Organization-Id header is required');
     }
