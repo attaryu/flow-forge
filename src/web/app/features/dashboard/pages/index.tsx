@@ -2,28 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { userQueryOption } from "~/features/auth/hooks/api/use-user";
+import { useDashboardStats } from "~/features/dashboard/hooks/api/use-dashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import { LayoutDashboard, Play, CheckCircle, AlertCircle, RefreshCw, Settings } from "lucide-react";
-
-interface StatItem {
-  title: string;
-  value: string;
-  description: string;
-  color: string;
-}
-
-interface ActivityItem {
-  name: string;
-  status: string;
-  time: string;
-  duration: string;
-}
-
-interface DashboardData {
-  stats: StatItem[];
-  activities: ActivityItem[];
-}
+import { LayoutDashboard, Play, CheckCircle, AlertCircle, RefreshCw, Settings, Activity } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 const iconMap: Record<string, any> = {
   "Total Workflows": LayoutDashboard,
@@ -35,49 +27,40 @@ const iconMap: Record<string, any> = {
 export default function DashboardIndex() {
   const queryClient = useQueryClient();
   const { data: user } = useQuery(userQueryOption);
+  const { data, isLoading, isError, refetch, isFetching } = useDashboardStats();
 
-  // Query dashboard statistics and recent activity (mocked client-side)
-  const { data, isLoading, isError, refetch, isFetching } = useQuery<DashboardData>({
-    queryKey: ["dashboardData"],
-    queryFn: async () => {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      return {
-        stats: [
-          {
-            title: "Total Workflows",
-            value: "12",
-            description: "+2 from last week",
-            color: "text-blue-500",
-          },
-          {
-            title: "Workflow Runs",
-            value: "1,248",
-            description: "Last 30 days",
-            color: "text-green-500",
-          },
-          {
-            title: "Success Rate",
-            value: "99.2%",
-            description: "+0.3% improvement",
-            color: "text-emerald-500",
-          },
-          {
-            title: "Failed Runs",
-            value: "10",
-            description: "Requires diagnosis",
-            color: "text-destructive",
-          },
-        ],
-        activities: [
-          { name: "Sync CRM Contacts",        status: "success", time: "2 minutes ago",  duration: "450ms"  },
-          { name: "Process Stripe Invoices",   status: "success", time: "15 minutes ago", duration: "1.2s"   },
-          { name: "Slack Alert Dispatcher",    status: "failed",  time: "1 hour ago",     duration: "250ms"  },
-          { name: "Database Backup Pipeline",  status: "success", time: "4 hours ago",    duration: "45.1s"  },
-        ],
-      };
+  const stats = [
+    {
+      title: "Total Workflows",
+      value: data?.totalWorkflows?.toString() || "0",
+      description: "Active workflows",
+      color: "text-blue-500",
     },
-  });
+    {
+      title: "Workflow Runs",
+      value: data?.totalRuns?.toLocaleString() || "0",
+      description: "Last 30 days",
+      color: "text-green-500",
+    },
+    {
+      title: "Success Rate",
+      value: data?.successRate !== undefined ? `${data.successRate}%` : "0%",
+      description: "Of all runs (30 days)",
+      color: "text-emerald-500",
+    },
+    {
+      title: "Failed Runs",
+      value: data?.failedRuns?.toString() || "0",
+      description: "Requires diagnosis",
+      color: "text-destructive",
+    },
+  ];
+
+  const chartData = data?.runsByDay.map((day) => ({
+    date: day.date,
+    success: day.total - day.failed,
+    failed: day.failed,
+  })) || [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -118,7 +101,7 @@ export default function DashboardIndex() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {data?.stats.map((stat) => {
+          {stats.map((stat) => {
             const IconComponent = iconMap[stat.title] || LayoutDashboard;
             return (
               <Card key={stat.title}>
@@ -139,13 +122,122 @@ export default function DashboardIndex() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Recent execution runs from your automation pipeline.</CardDescription>
+            <CardTitle>Workflow Runs (Last 30 Days)</CardTitle>
+            <CardDescription>Daily execution counts, showing successful vs failed runs.</CardDescription>
+          </CardHeader>
+          <CardContent className="h-75 w-full">
+            {isLoading ? (
+              <div className="h-full w-full flex items-center justify-center">
+                <Skeleton className="h-full w-full" />
+              </div>
+            ) : isError ? (
+              <div className="h-full w-full flex items-center justify-center text-sm text-destructive">
+                Could not retrieve run statistics chart.
+              </div>
+            ) : chartData.length === 0 ? (
+              <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
+                No run history found for the last 30 days.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(120, 120, 120, 0.15)" />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(str) => {
+                      try {
+                        const date = new Date(str);
+                        return date.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+                      } catch {
+                        return str;
+                      }
+                    }}
+                    stroke="currentColor"
+                    className="text-muted-foreground"
+                    fontSize={11}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    stroke="currentColor"
+                    className="text-muted-foreground"
+                    fontSize={11}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--background))",
+                      borderColor: "hsl(var(--border))",
+                      borderRadius: "6px",
+                      color: "hsl(var(--foreground))",
+                    }}
+                    labelFormatter={(label) => {
+                      try {
+                        const date = new Date(label);
+                        return date.toLocaleDateString("id-ID", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        });
+                      } catch {
+                        return label;
+                      }
+                    }}
+                  />
+                  <Legend verticalAlign="top" height={36} iconType="circle" />
+                  <Bar dataKey="success" name="Success" fill="#10b981" radius={[4, 4, 0, 0]} stackId="a" />
+                  <Bar dataKey="failed" name="Failed" fill="#ef4444" radius={[4, 4, 0, 0]} stackId="a" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Frequently used automation shortcuts.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <Link
+              to="/dashboard/workflows"
+              className="flex w-full items-center gap-3 rounded-lg border p-3 hover:bg-accent text-left text-sm font-medium transition-colors text-foreground"
+            >
+              <Play className="h-4 w-4 text-blue-500" />
+              <div>
+                <p>Manage Workflows</p>
+                <p className="text-xs text-muted-foreground">View, edit, or create new automation flows</p>
+              </div>
+            </Link>
+            <Link
+              to="/dashboard/settings"
+              className="flex w-full items-center gap-3 rounded-lg border p-3 hover:bg-accent text-left text-sm font-medium transition-colors text-foreground"
+            >
+              <Settings className="h-4 w-4 text-zinc-500" />
+              <div>
+                <p>Account Settings</p>
+                <p className="text-xs text-muted-foreground">Manage your profile and preferences</p>
+              </div>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4">
+        <Card className="col-span-full">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Recent execution runs from your automation pipeline.</CardDescription>
+            </div>
+            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="space-y-4">
-                {Array.from({ length: 4 }).map((_, i) => (
+                {Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="flex items-center gap-4">
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-1/3" />
@@ -157,51 +249,66 @@ export default function DashboardIndex() {
               </div>
             ) : isError ? (
               <p className="text-sm text-destructive">Could not retrieve recent execution activities.</p>
+            ) : data?.recentRuns.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-6">No recent runs found.</p>
             ) : (
-              <div className="space-y-8">
-                {data?.activities.map((activity, i) => (
-                  <div key={i} className="flex items-center">
-                    <div className="ml-4 space-y-1 flex-1">
-                      <p className="text-sm font-medium leading-none">{activity.name}</p>
-                      <p className="text-xs text-muted-foreground">{activity.time}</p>
+              <div className="space-y-4">
+                {data?.recentRuns.map((run) => (
+                  <div
+                    key={run.id}
+                    className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
+                  >
+                    <div className="space-y-1">
+                      <Link
+                        to={`/dashboard/workflows/${run.workflowId}`}
+                        className="text-sm font-medium hover:underline text-foreground block"
+                      >
+                        {run.workflowName}
+                      </Link>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                        <span className="font-mono text-[10px] bg-muted px-1.5 py-0.5 rounded">
+                          ID: {run.id.slice(0, 8)}
+                        </span>
+                        <span>•</span>
+                        <span>{run.triggererName ? `by ${run.triggererName}` : "manual"}</span>
+                        <span>•</span>
+                        <span>
+                          {(() => {
+                            try {
+                              return new Date(run.createdAt).toLocaleString("id-ID");
+                            } catch {
+                              return run.createdAt;
+                            }
+                          })()}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-xs text-muted-foreground">{activity.duration}</span>
-                      <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                        activity.status === "success"
-                          ? "bg-green-500/10 text-green-500 ring-green-500/20"
-                          : "bg-destructive/10 text-destructive ring-destructive/20"
-                      }`}>
-                        {activity.status}
+                      {run.totalDurationMs !== null && run.totalDurationMs !== undefined && (
+                        <span className="text-xs text-muted-foreground">
+                          {run.totalDurationMs >= 1000
+                            ? `${(run.totalDurationMs / 1000).toFixed(2)}s`
+                            : `${run.totalDurationMs}ms`}
+                        </span>
+                      )}
+                      <span
+                        className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
+                          run.status === "success"
+                            ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20"
+                            : run.status === "failed"
+                            ? "bg-destructive/10 text-destructive ring-destructive/20"
+                            : run.status === "running"
+                            ? "bg-yellow-500/10 text-yellow-500 ring-yellow-500/20"
+                            : "bg-blue-500/10 text-blue-500 ring-blue-500/20"
+                        }`}
+                      >
+                        {run.status}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Frequently used automation shortcuts.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <button className="flex w-full items-center gap-3 rounded-lg border p-3 hover:bg-accent text-left text-sm font-medium transition-colors cursor-pointer text-foreground">
-              <Play className="h-4 w-4 text-blue-500" />
-              <div>
-                <p>Create a New Workflow</p>
-                <p className="text-xs text-muted-foreground">Start building from scratch or templates</p>
-              </div>
-            </button>
-            <Link to="/dashboard/settings" className="flex w-full items-center gap-3 rounded-lg border p-3 hover:bg-accent text-left text-sm font-medium transition-colors text-foreground">
-              <Settings className="h-4 w-4 text-zinc-500" />
-              <div>
-                <p>Account Settings</p>
-                <p className="text-xs text-muted-foreground">Manage your profile and preferences</p>
-              </div>
-            </Link>
           </CardContent>
         </Card>
       </div>

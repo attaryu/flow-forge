@@ -63,6 +63,8 @@ export function useTriggerWorkflowRun() {
     onSuccess: (_, workflowId) => {
       // Invalidate runs history untuk workflow ini
       queryClient.invalidateQueries({ queryKey: ["workflows", workflowId, "runs"] });
+      // Invalidate dashboard stats agar dashboard up-to-date
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "stats"] });
     },
   });
 }
@@ -146,6 +148,8 @@ export function useDeleteRun(workflowId: string) {
       queryClient.invalidateQueries({ queryKey: ["workflows", workflowId, "runs"] });
       // Hapus data detail run dari cache
       queryClient.removeQueries({ queryKey: ["runs", runId] });
+      // Invalidate dashboard stats agar dashboard up-to-date
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "stats"] });
     },
   });
 }
