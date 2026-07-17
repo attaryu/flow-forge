@@ -27,6 +27,24 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
   const { data: run, isLoading, isError } = useWorkflowRunDetail(runId || "");
   const [expandedSteps, setExpandedSteps] = React.useState<Record<string, boolean>>({});
 
+  // Keep track of the last non-null run data to prevent flashing/layout shifts during close animation
+  const [lastRun, setLastRun] = React.useState<typeof run | null>(null);
+
+  React.useEffect(() => {
+    if (run) {
+      setLastRun(run);
+    }
+  }, [run]);
+
+  // Reset lastRun cache only when drawer opens with a brand-new run ID to show fresh loader
+  React.useEffect(() => {
+    if (isOpen && runId) {
+      setLastRun(null);
+    }
+  }, [isOpen, runId]);
+
+  const displayRun = run || lastRun;
+
   const toggleStep = (stepId: string) => {
     setExpandedSteps((prev) => ({
       ...prev,
@@ -69,9 +87,9 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
               Execution Detail
-              {run && (
-                <Badge variant={getStatusColor(run.status)} className="capitalize">
-                  {run.status}
+              {displayRun && (
+                <Badge variant={getStatusColor(displayRun.status)} className="capitalize">
+                  {displayRun.status}
                 </Badge>
               )}
             </h2>
@@ -90,12 +108,12 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
               <Loader2 className="h-8 w-8 animate-spin mb-3 text-muted-foreground/60" />
               <p className="text-sm font-medium">Loading execution details...</p>
             </div>
-          ) : isError || !run ? (
+          ) : (isError || !displayRun) && runId ? (
             <div className="p-4 rounded-md bg-destructive/15 text-destructive flex items-center gap-2 text-sm">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <span>Failed to load run details. It may have been deleted.</span>
             </div>
-          ) : (
+          ) : displayRun ? (
             <>
               {/* Summary Metadata Card */}
               <div className="grid grid-cols-2 gap-4 bg-muted/30 border rounded-lg p-3.5 text-xs">
@@ -103,49 +121,49 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
                   <span className="text-muted-foreground block mb-0.5">Trigger Type</span>
                   <span className="font-semibold capitalize flex items-center gap-1.5">
                     <Play className="h-3 w-3 fill-current text-muted-foreground" />
-                    {run.triggerType}
+                    {displayRun.triggerType}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block mb-0.5">Duration</span>
                   <span className="font-semibold flex items-center gap-1.5">
                     <Clock className="h-3 w-3 text-muted-foreground" />
-                    {run.totalDurationMs !== undefined ? `${run.totalDurationMs}ms` : "-"}
+                    {displayRun.totalDurationMs !== undefined ? `${displayRun.totalDurationMs}ms` : "-"}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block mb-0.5">Started At</span>
                   <span className="font-medium text-slate-700">
-                    {run.startedAt ? new Date(run.startedAt).toLocaleString() : "-"}
+                    {displayRun.startedAt ? new Date(displayRun.startedAt).toLocaleString() : "-"}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block mb-0.5">Ended At</span>
                   <span className="font-medium text-slate-700">
-                    {run.endedAt ? new Date(run.endedAt).toLocaleString() : "-"}
+                    {displayRun.endedAt ? new Date(displayRun.endedAt).toLocaleString() : "-"}
                   </span>
                 </div>
               </div>
 
               {/* Global Error Message (if any) */}
-              {run.errorMessage && (
+              {displayRun.errorMessage && (
                 <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs space-y-1">
                   <span className="font-semibold block text-rose-900">Execution Error:</span>
                   <p className="font-mono bg-white/50 p-2 rounded border border-rose-100 overflow-x-auto whitespace-pre-wrap max-h-32">
-                    {run.errorMessage}
+                    {displayRun.errorMessage}
                   </p>
                 </div>
               )}
 
               {/* AI Diagnosis Panel (if any) */}
-              {run.aiDiagnosis && (
-                <div className="p-3.5 bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 text-violet-900 rounded-lg text-xs space-y-1.5 shadow-sm">
+              {displayRun.aiDiagnosis && (
+                <div className="p-3.5 bg-linear-to-r from-violet-50 to-indigo-50 border border-violet-200 text-violet-900 rounded-lg text-xs space-y-1.5 shadow-sm">
                   <div className="flex items-center gap-1.5 font-bold text-violet-850">
                     <Sparkles className="h-4 w-4 text-violet-650 animate-pulse fill-current" />
                     <span>AI Diagnosis & Remediation</span>
                   </div>
                   <p className="leading-relaxed bg-white/70 border border-violet-100 p-2.5 rounded-md font-sans text-slate-800 select-text whitespace-pre-wrap">
-                    {run.aiDiagnosis}
+                    {displayRun.aiDiagnosis}
                   </p>
                 </div>
               )}
@@ -153,13 +171,13 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
               {/* Step Logs List */}
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold tracking-tight text-slate-800">Step Execution Logs</h3>
-                {!run.stepLogs || run.stepLogs.length === 0 ? (
+                {!displayRun.stepLogs || displayRun.stepLogs.length === 0 ? (
                   <div className="p-8 border border-dashed rounded-lg text-center text-xs text-muted-foreground bg-muted/10">
                     No step logs recorded for this execution.
                   </div>
                 ) : (
                   <div className="space-y-2.5">
-                    {run.stepLogs.map((log) => {
+                    {displayRun.stepLogs.map((log) => {
                       const isExpanded = !!expandedSteps[log.id];
                       return (
                         <div 
@@ -250,7 +268,7 @@ export function RunDetailDrawer({ runId, isOpen, onClose }: RunDetailDrawerProps
                 )}
               </div>
             </>
-          )}
+          ) : null}
         </div>
       </SheetContent>
     </Sheet>
