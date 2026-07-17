@@ -60,7 +60,7 @@ export default function DashboardLayout() {
 	return (
 		<SidebarProvider>
 			<AppSidebar user={user} />
-			<SidebarInset>
+			<SidebarInset className="min-w-0 overflow-x-hidden">
 				<header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="-ml-1" />
@@ -78,7 +78,7 @@ export default function DashboardLayout() {
 						</Breadcrumb>
 					</div>
 				</header>
-				<main className="flex-1 overflow-y-auto p-6">
+				<main className="flex-1 overflow-y-auto p-6 overflow-x-hidden">
 					<Outlet />
 				</main>
 			</SidebarInset>

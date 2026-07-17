@@ -18,230 +18,13 @@ import {
 } from '../utils/workflow-validator';
 import { calculateLayout, type NodePosition } from '../utils/workflow-layout';
 import { Button } from '~/components/ui/button';
+import { workflowSchema } from './workflow-editor-schema';
 
 interface WorkflowEditorProps {
 	initialDefinition?: WorkflowDefinition;
 	onSave: (definition: WorkflowDefinition) => void;
 	isSaving?: boolean;
 }
-
-const workflowSchema = {
-	$schema: 'http://json-schema.org/draft-07/schema#',
-	title: 'Workflow',
-	type: 'object',
-	required: ['name', 'definition'],
-	properties: {
-		name: {
-			type: 'string',
-			description: 'The name of the workflow',
-		},
-		description: {
-			type: 'string',
-			description: 'An optional description of what the workflow does',
-		},
-		definition: {
-			type: 'object',
-			required: ['nodes', 'edges'],
-			properties: {
-				nodes: {
-					type: 'array',
-					description: 'List of nodes in the workflow',
-					items: {
-						type: 'object',
-						required: ['id', 'type', 'config'],
-						properties: {
-							id: {
-								type: 'string',
-								description: 'Unique identifier for the node',
-							},
-							type: {
-								type: 'string',
-								enum: [
-									'HTTP_CALL',
-									'DELAY',
-									'CONDITIONAL_BRANCH',
-									'DATA_TRANSFORM',
-								],
-								description: 'The type of execution node',
-							},
-							config: {
-								type: 'object',
-								description: 'Configuration specific to the node type',
-							},
-						},
-						allOf: [
-							{
-								if: {
-									properties: {
-										type: { const: 'HTTP_CALL' },
-									},
-								},
-								then: {
-									properties: {
-										config: {
-											type: 'object',
-											required: ['url', 'method'],
-											properties: {
-												url: {
-													type: 'string',
-													format: 'uri',
-													description: 'The HTTP URL to call',
-												},
-												method: {
-													type: 'string',
-													enum: ['GET', 'POST'],
-													description: 'The HTTP method',
-												},
-												headers: {
-													type: 'object',
-													description:
-														'HTTP request headers as key-value pairs',
-													additionalProperties: { type: 'string' },
-												},
-												payload: {
-													type: 'string',
-													description:
-														'HTTP request body/payload for POST requests',
-												},
-											},
-										},
-									},
-								},
-							},
-							{
-								if: {
-									properties: {
-										type: { const: 'DELAY' },
-									},
-								},
-								then: {
-									properties: {
-										config: {
-											type: 'object',
-											required: ['seconds'],
-											properties: {
-												seconds: {
-													type: 'integer',
-													minimum: 1,
-													maximum: 86400,
-													description:
-														'Number of seconds to delay execution (1 to 86400)',
-												},
-											},
-										},
-									},
-								},
-							},
-							{
-								if: {
-									properties: {
-										type: { const: 'CONDITIONAL_BRANCH' },
-									},
-								},
-								then: {
-									properties: {
-										config: {
-											type: 'object',
-											required: ['operator', 'left', 'right'],
-											properties: {
-												operator: {
-													type: 'string',
-													enum: [
-														'EQUALS',
-														'NOT_EQUALS',
-														'GREATER_THAN',
-														'CONTAINS',
-													],
-													description: 'Comparison operator',
-												},
-												left: {
-													type: 'string',
-													description:
-														'Left operand value or variable placeholder (e.g. ${node-id.status})',
-												},
-												right: {
-													type: 'string',
-													description: 'Right operand value to compare against',
-												},
-											},
-										},
-									},
-								},
-							},
-							{
-								if: {
-									properties: {
-										type: { const: 'DATA_TRANSFORM' },
-									},
-								},
-								then: {
-									properties: {
-										config: {
-											type: 'object',
-											required: ['mode'],
-											properties: {
-												mode: {
-													type: 'string',
-													enum: ['simple', 'advanced'],
-													description: 'The transformation mode',
-												},
-												operation: {
-													type: 'string',
-													description:
-														'For simple mode: The operation to execute',
-												},
-												inputs: {
-													type: 'array',
-													description:
-														'For simple mode: Inputs to the operation',
-													items: {
-														type: 'object',
-														properties: {
-															value: { type: 'string' },
-														},
-													},
-												},
-												expression: {
-													type: 'string',
-													description:
-														'For advanced mode: The expression to evaluate',
-												},
-											},
-										},
-									},
-								},
-							},
-						],
-					},
-				},
-				edges: {
-					type: 'array',
-					description: 'List of connections/edges between nodes',
-					items: {
-						type: 'object',
-						required: ['from', 'to'],
-						properties: {
-							from: {
-								type: 'string',
-								description: 'The ID of the source node',
-							},
-							to: {
-								type: 'string',
-								description: 'The ID of the target node',
-							},
-							sourceHandle: {
-								type: 'string',
-								enum: ['true', 'false'],
-								description:
-									"Required for CONDITIONAL_BRANCH nodes: indicate 'true' or 'false' path",
-							},
-						},
-					},
-				},
-			},
-		},
-	},
-};
 
 // 1. Color coding for node types
 const NODE_COLORS = {
@@ -756,14 +539,19 @@ export function WorkflowEditor({
 	}, [isSaving]);
 
 	return (
-		<div className="flex flex-col h-[calc(100vh-12rem)] border rounded-lg bg-background overflow-hidden">
+		<div className="flex flex-col w-full max-w-full border rounded-lg bg-background overflow-hidden">
 			{/* Legend & Layout Header */}
 			<NodeTypeLegend />
 
-			{/* Editor & Visualization Side by Side */}
-			<div className="flex flex-1 min-h-0 border-b relative">
-				{/* Left Side: Monaco Editor */}
-				<div className="w-1/2 h-full flex flex-col border-r border-slate-200">
+			{/* Validation Panel above schema editor */}
+			<div className="p-4 bg-slate-50 border-b">
+				<ValidationPanel errors={validation.errors} valid={validation.valid} />
+			</div>
+
+			{/* Editor & Visualization Stacked Vertically */}
+			<div className="flex flex-col flex-1 min-h-0 border-b relative">
+				{/* Top: Monaco Editor */}
+				<div className="w-full h-[500px] max-h-[700px] flex flex-col border-b border-slate-200">
 					<div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
 						<span className="flex items-center gap-1.5">
 							<FileCode className="w-3.5 h-3.5" />
@@ -809,7 +597,7 @@ export function WorkflowEditor({
 						</div>
 					</div>
 					<div
-						className={`flex-1 min-h-0 ${!validation.valid ? 'border-2 border-rose-500/20' : ''}`}
+						className={`flex-1 min-h-0 w-full min-w-0 ${!validation.valid ? 'border-2 border-rose-500/20' : ''}`}
 					>
 						<Editor
 							height="100%"
@@ -831,8 +619,8 @@ export function WorkflowEditor({
 					</div>
 				</div>
 
-				{/* Right Side: Live SVG Visualization */}
-				<div className="w-1/2 h-full flex flex-col">
+				{/* Bottom: Live SVG Visualization */}
+				<div className="w-full h-[500px] flex flex-col">
 					<div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
 						<span className="flex items-center gap-1.5">
 							<GitBranch className="w-3.5 h-3.5" />
@@ -847,11 +635,6 @@ export function WorkflowEditor({
 						/>
 					</div>
 				</div>
-			</div>
-
-			{/* Validation Panel Footer */}
-			<div className="p-4 bg-slate-50 border-t">
-				<ValidationPanel errors={validation.errors} valid={validation.valid} />
 			</div>
 		</div>
 	);
