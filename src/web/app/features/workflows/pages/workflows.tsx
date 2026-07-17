@@ -7,6 +7,11 @@ import {
   useDeleteWorkflow,
 } from "../hooks/api/use-workflows";
 import { WorkflowEditor } from "../components/workflow-editor";
+import { RunTriggerButton } from "../components/run-trigger-button";
+import { LiveExecutionPanel } from "../components/live-execution-panel";
+import { RunHistoryPanel } from "../components/run-history-panel";
+import { RunDetailDrawer } from "../components/run-detail-drawer";
+import { useWorkflowRunSSE } from "../hooks/api/use-runs-sse";
 import type { Workflow, WorkflowDefinition } from "../types";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "~/components/ui/card";
@@ -14,6 +19,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { Badge } from "~/components/ui/badge";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +50,32 @@ export default function WorkflowsPage() {
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
   const [newName, setNewName] = React.useState("");
   const [newDescription, setNewDescription] = React.useState("");
+
+  // States for Execution, History & Detail Panel
+  const [activeRunId, setActiveRunId] = React.useState<string | null>(null);
+  const [isLiveOpen, setIsLiveOpen] = React.useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = React.useState(false);
+  const [selectedRunId, setSelectedRunId] = React.useState<string | null>(null);
+
+  // Subscribe to live SSE events for active run
+  const { events, workflowStatus, error: sseError } = useWorkflowRunSSE(activeRunId);
+
+  // Calculate executionStatus mapping for node canvas highlight
+  const executionStatus = React.useMemo(() => {
+    const statusMap: Record<string, "running" | "success" | "failed"> = {};
+    events.forEach((event) => {
+      if (event.nodeId) {
+        if (event.type === "step_started") {
+          statusMap[event.nodeId] = "running";
+        } else if (event.type === "step_completed") {
+          statusMap[event.nodeId] = "success";
+        } else if (event.type === "step_failed") {
+          statusMap[event.nodeId] = "failed";
+        }
+      }
+    });
+    return statusMap;
+  }, [events]);
 
   const createWorkflowMutation = useCreateWorkflow();
   const deleteWorkflowMutation = useDeleteWorkflow();
@@ -100,7 +132,13 @@ export default function WorkflowsPage() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setEditingWorkflow(null)}
+              onClick={() => {
+                setEditingWorkflow(null);
+                setActiveRunId(null);
+                setIsLiveOpen(false);
+                setIsHistoryOpen(false);
+                setSelectedRunId(null);
+              }}
               className="h-8 w-8 cursor-pointer"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -112,9 +150,26 @@ export default function WorkflowsPage() {
               )}
             </div>
           </div>
-          <Badge variant={editingWorkflow.status === "active" ? "default" : "secondary"}>
-            {editingWorkflow.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsHistoryOpen(true)}
+              className="cursor-pointer"
+            >
+              Run History
+            </Button>
+            <RunTriggerButton
+              workflowId={editingWorkflow.id}
+              onTriggered={(runId) => {
+                setActiveRunId(runId);
+                setIsLiveOpen(true);
+              }}
+            />
+            <Badge variant={editingWorkflow.status === "active" ? "default" : "secondary"}>
+              {editingWorkflow.status}
+            </Badge>
+          </div>
         </div>
 
         <div className="flex-1 min-h-0">
@@ -122,8 +177,42 @@ export default function WorkflowsPage() {
             initialDefinition={editingWorkflow.definition}
             onSave={handleSaveDefinition}
             isSaving={updateWorkflowMutation.isPending}
+            executionStatus={executionStatus}
           />
         </div>
+
+        {/* Live Execution Stream Drawer */}
+        <Sheet open={isLiveOpen} onOpenChange={setIsLiveOpen}>
+          <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col h-full border-l border-border">
+            <LiveExecutionPanel
+              runId={activeRunId || ""}
+              events={events}
+              workflowStatus={workflowStatus}
+              error={sseError}
+              onViewDetails={() => {
+                setSelectedRunId(activeRunId);
+                setIsLiveOpen(false);
+              }}
+            />
+          </SheetContent>
+        </Sheet>
+
+        {/* Execution Run History List Drawer */}
+        <RunHistoryPanel
+          workflowId={editingWorkflow.id}
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          onSelectRun={(runId) => {
+            setSelectedRunId(runId);
+          }}
+        />
+
+        {/* Execution Log Details Drawer */}
+        <RunDetailDrawer
+          runId={selectedRunId}
+          isOpen={!!selectedRunId}
+          onClose={() => setSelectedRunId(null)}
+        />
       </div>
     );
   }

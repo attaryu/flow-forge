@@ -18,12 +18,14 @@ import {
 } from '../utils/workflow-validator';
 import { calculateLayout, type NodePosition } from '../utils/workflow-layout';
 import { Button } from '~/components/ui/button';
+import { cn } from '~/shared/utils/utils';
 import { workflowSchema } from './workflow-editor-schema';
 
 interface WorkflowEditorProps {
 	initialDefinition?: WorkflowDefinition;
 	onSave: (definition: WorkflowDefinition) => void;
 	isSaving?: boolean;
+	executionStatus?: Record<string, 'running' | 'success' | 'failed'>;
 }
 
 // 1. Color coding for node types
@@ -121,12 +123,14 @@ interface WorkflowVisualizationProps {
 	nodes: WorkflowNode[];
 	edges: DbEdge[];
 	positions: NodePosition[];
+	executionStatus?: Record<string, 'running' | 'success' | 'failed'>;
 }
 
 function WorkflowVisualization({
 	nodes,
 	edges,
 	positions,
+	executionStatus,
 }: WorkflowVisualizationProps) {
 	const nodeWidth = 180;
 	const nodeHeight = 64;
@@ -292,6 +296,23 @@ function WorkflowVisualization({
 						};
 
 						const label = node.data?.label || node.id;
+						const status = executionStatus?.[node.id];
+
+						let borderStroke = typeColor.border;
+						let strokeWidth = '2';
+						let strokeDasharray: string | undefined = undefined;
+
+						if (status === 'running') {
+							borderStroke = '#f59e0b'; // amber-500
+							strokeWidth = '3';
+							strokeDasharray = '4 4';
+						} else if (status === 'success') {
+							borderStroke = '#10b981'; // emerald-500
+							strokeWidth = '3';
+						} else if (status === 'failed') {
+							borderStroke = '#ef4444'; // rose-500
+							strokeWidth = '3';
+						}
 
 						return (
 							<g key={node.id} transform={`translate(${pos.x}, ${pos.y})`}>
@@ -301,9 +322,13 @@ function WorkflowVisualization({
 									rx="6"
 									ry="6"
 									fill="#ffffff"
-									stroke={typeColor.border}
-									strokeWidth="2"
-									className="filter drop-shadow-sm transition-all duration-300"
+									stroke={borderStroke}
+									strokeWidth={strokeWidth}
+									strokeDasharray={strokeDasharray}
+									className={cn(
+										'filter drop-shadow-sm transition-all duration-300',
+										status === 'running' && 'animate-pulse',
+									)}
 								/>
 								{/* Node type header band */}
 								<path
@@ -350,6 +375,7 @@ export function WorkflowEditor({
 	initialDefinition,
 	onSave,
 	isSaving,
+	executionStatus,
 }: WorkflowEditorProps) {
 	const handleEditorDidMount = (editor: any, monaco: Monaco) => {
 		monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -632,6 +658,7 @@ export function WorkflowEditor({
 							nodes={lastValidLayout.nodes}
 							edges={lastValidLayout.edges}
 							positions={lastValidLayout.positions}
+							executionStatus={executionStatus}
 						/>
 					</div>
 				</div>
