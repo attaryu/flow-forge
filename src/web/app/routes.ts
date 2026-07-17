@@ -14,5 +14,6 @@ export default [
   layout("shared/layouts/dashboard-layout.tsx", [
     route("dashboard", "features/dashboard/pages/index.tsx"),
     route("dashboard/settings", "features/dashboard/pages/settings.tsx"),
+    route("dashboard/workflows", "features/workflows/pages/workflows.tsx"),
   ]),
 ] satisfies RouteConfig;

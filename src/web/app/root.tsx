@@ -9,6 +9,7 @@ import {
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "~/shared/utils/query-client";
 import { userQueryOption } from "~/features/auth/hooks/api/use-user";
+import { Toaster } from "~/components/ui/toaster";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -37,6 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
