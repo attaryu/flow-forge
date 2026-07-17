@@ -4,21 +4,21 @@ import { NodeResult } from '../../shared/types/node-result.interface';
 @Injectable()
 export class ConditionalBranchHandler {
   async handle(config: any): Promise<NodeResult> {
-    const { field, operator, value } = config;
+    const { left, operator, right } = config;
 
     let result = false;
     switch (operator) {
       case 'EQUALS':
-        result = String(field) === String(value);
+        result = String(left) === String(right);
         break;
       case 'NOT_EQUALS':
-        result = String(field) !== String(value);
+        result = String(left) !== String(right);
         break;
       case 'GREATER_THAN':
-        result = Number(field) > Number(value);
+        result = Number(left) > Number(right);
         break;
       case 'CONTAINS':
-        result = String(field).includes(String(value));
+        result = String(left).includes(String(right));
         break;
       default:
         return {
