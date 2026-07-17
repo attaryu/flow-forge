@@ -103,10 +103,33 @@ export const runDetailQueryOption = (runId: string) =>
 
 // 4. Hook untuk list history runs
 export function useWorkflowRuns(workflowId: string) {
-  return useQuery(workflowRunsQueryOption(workflowId));
+  const queryOptions = workflowRunsQueryOption(workflowId);
+  return useQuery({
+    ...queryOptions,
+    refetchInterval: (query) => {
+      const runs = query.state.data;
+      if (Array.isArray(runs)) {
+        const hasActiveRun = runs.some(
+          (run) => run.status === "pending" || run.status === "running"
+        );
+        return hasActiveRun ? 3000 : false;
+      }
+      return false;
+    },
+  });
 }
 
 // 5. Hook untuk detail run + step logs
 export function useWorkflowRunDetail(runId: string) {
-  return useQuery(runDetailQueryOption(runId));
+  const queryOptions = runDetailQueryOption(runId);
+  return useQuery({
+    ...queryOptions,
+    refetchInterval: (query) => {
+      const run = query.state.data;
+      if (run && (run.status === "pending" || run.status === "running")) {
+        return 3000;
+      }
+      return false;
+    },
+  });
 }

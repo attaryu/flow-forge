@@ -60,6 +60,15 @@ export default function WorkflowsPage() {
   // Subscribe to live SSE events for active run
   const { events, workflowStatus, error: sseError } = useWorkflowRunSSE(activeRunId);
 
+  // Invalidate execution history queries once the active run completes (reaches a final state via SSE)
+  React.useEffect(() => {
+    if ((workflowStatus === "success" || workflowStatus === "failed") && editingWorkflow?.id) {
+      queryClient.invalidateQueries({
+        queryKey: ["workflows", editingWorkflow.id, "runs"],
+      });
+    }
+  }, [workflowStatus, editingWorkflow?.id, queryClient]);
+
   // Calculate executionStatus mapping for node canvas highlight
   const executionStatus = React.useMemo(() => {
     const statusMap: Record<string, "running" | "success" | "failed"> = {};
