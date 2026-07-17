@@ -2,7 +2,7 @@ import * as React from "react";
 import { Loader2, CheckCircle2, XCircle, ChevronDown, ChevronRight, Eye, AlertCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import type { SSEEvent } from "../../hooks/api/use-runs-sse";
+import type { SSEEvent } from "../hooks/api/use-runs-sse";
 
 interface LiveExecutionPanelProps {
   runId: string;

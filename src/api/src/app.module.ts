@@ -6,6 +6,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { WorkflowsModule } from './features/workflows/workflows.module';
 import { OrganizationsModule } from './features/organizations/organizations.module';
 import { RunsModule } from './features/runs/runs.module';
+import { DashboardModule } from './features/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RunsModule } from './features/runs/runs.module';
     WorkflowsModule,
     OrganizationsModule,
     RunsModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
