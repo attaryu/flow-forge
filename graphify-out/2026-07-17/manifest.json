@@ -715,8 +715,8 @@
     "semantic_hash": "1db8eece37450166fff4bd2fc98407cc"
   },
   "src/web/app/features/workflows/components/workflow-editor.tsx": {
-    "mtime": 1784245105.1033447,
-    "ast_hash": "f8e0d6f0a5049e022e11442c95e67759",
+    "mtime": 1784242429.1156707,
+    "ast_hash": "fd37b9d03a3efbab2986aa79648f3293",
     "semantic_hash": ""
   },
   "src/web/app/features/workflows/hooks/api/use-workflows.ts": {
@@ -740,8 +740,8 @@
     "semantic_hash": "761e321950d01daf57f85e61c8dd22af"
   },
   "src/web/app/features/workflows/utils/elk-layout.ts": {
-    "mtime": 1784245081.5315406,
-    "ast_hash": "6ff9bfb6fc692717dbbaa038bb3b67f2",
+    "mtime": 1784242263.9692247,
+    "ast_hash": "d4cdf180a0b8976ff346b8a7c5ba2bf0",
     "semantic_hash": ""
   },
   "src/web/app/features/workflows/utils/workflow-validation.ts": {

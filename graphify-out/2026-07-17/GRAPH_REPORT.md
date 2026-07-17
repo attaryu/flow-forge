@@ -1,7 +1,7 @@
 # Graph Report - flow-forge  (2026-07-17)
 
 ## Corpus Check
-- 143 files · ~41,146 words
+- 143 files · ~41,010 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -272,7 +272,7 @@ Nodes (19): `add` — Add components, `apply` — Apply a preset to an existing 
 
 ### Community 26 - "nest-cli.json"
 Cohesion: 0.12
-Nodes (17): @base-ui/react, class-variance-authority, isbot, lucide-react, react-router, @react-router/serve, dependencies, @base-ui/react (+9 more)
+Nodes (17): class-variance-authority, isbot, lucide-react, react-dom, react-router, @react-router/serve, dependencies, class-variance-authority (+9 more)
 
 ### Community 27 - "nest-cli.json"
 Cohesion: 0.12
@@ -364,7 +364,7 @@ Nodes (9): apply Command, shadcn CLI, docs Command, info Command, init Command, 
 
 ### Community 50 - "@types/bcryptjs"
 Cohesion: 0.22
-Nodes (9): devDependencies, eslint-config-prettier, @eslint/eslintrc, typescript, typescript-eslint, eslint-config-prettier, @eslint/eslintrc, typescript (+1 more)
+Nodes (9): devDependencies, eslint, @eslint/eslintrc, typescript, typescript-eslint, eslint, @eslint/eslintrc, typescript (+1 more)
 
 ### Community 51 - "@types/cookie-parser"
 Cohesion: 0.25

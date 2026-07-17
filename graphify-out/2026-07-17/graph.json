@@ -1337,8 +1337,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_api_package_devdependencies_eslint",
-      "community": 86,
-      "community_name": "eslint.config.mjs",
+      "community": 50,
+      "community_name": "@types/bcryptjs",
       "norm_label": "eslint"
     },
     {
@@ -1348,8 +1348,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_api_package_json_eslint",
-      "community": 86,
-      "community_name": "eslint.config.mjs",
+      "community": 50,
+      "community_name": "@types/bcryptjs",
       "norm_label": "eslint"
     },
     {
@@ -1359,8 +1359,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_api_package_devdependencies_eslint_config_prettier",
-      "community": 50,
-      "community_name": "@types/bcryptjs",
+      "community": 86,
+      "community_name": "eslint.config.mjs",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -1370,8 +1370,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_api_package_json_eslint_config_prettier",
-      "community": 50,
-      "community_name": "@types/bcryptjs",
+      "community": 86,
+      "community_name": "eslint.config.mjs",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -6361,7 +6361,7 @@
       "label": "WorkflowEditor()",
       "file_type": "code",
       "source_file": "src/web/app/features/workflows/components/workflow-editor.tsx",
-      "source_location": "L470",
+      "source_location": "L438",
       "_origin": "ast",
       "id": "src_web_app_features_workflows_components_workflow_editor_workfloweditor",
       "community": 37,
@@ -7442,8 +7442,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_web_package_dependencies_base_ui_react",
-      "community": 26,
-      "community_name": "nest-cli.json",
+      "community": 79,
+      "community_name": "shadcn Skill",
       "norm_label": "@base-ui/react"
     },
     {
@@ -7453,8 +7453,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 26,
-      "community_name": "nest-cli.json",
+      "community": 79,
+      "community_name": "shadcn Skill",
       "norm_label": "@base-ui/react"
     },
     {
@@ -7728,8 +7728,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_web_package_dependencies_react_dom",
-      "community": 79,
-      "community_name": "shadcn Skill",
+      "community": 26,
+      "community_name": "nest-cli.json",
       "norm_label": "react-dom"
     },
     {
@@ -7739,8 +7739,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "react_dom",
-      "community": 79,
-      "community_name": "shadcn Skill",
+      "community": 26,
+      "community_name": "nest-cli.json",
       "norm_label": "react-dom"
     },
     {
@@ -28390,7 +28390,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/web/app/features/workflows/components/workflow-editor.tsx",
-      "source_location": "L470",
+      "source_location": "L438",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_web_app_features_workflows_components_workflow_editor",
@@ -28605,7 +28605,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/web/app/features/workflows/components/workflow-editor.tsx",
-      "source_location": "L189",
+      "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_web_app_features_workflows_components_workflow_editor_workfloweditorinner",
