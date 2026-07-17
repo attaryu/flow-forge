@@ -185,6 +185,7 @@ export default function WorkflowsPage() {
         <Sheet open={isLiveOpen} onOpenChange={setIsLiveOpen}>
           <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col h-full border-l border-border">
             <LiveExecutionPanel
+              key={activeRunId || ""}
               runId={activeRunId || ""}
               events={events}
               workflowStatus={workflowStatus}
@@ -304,7 +305,7 @@ export default function WorkflowsPage() {
       )}
 
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-106.25">
           <DialogHeader>
             <DialogTitle>Create Workflow</DialogTitle>
             <DialogDescription>

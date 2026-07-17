@@ -29,6 +29,11 @@ export function useWorkflowRunSSE(runId: string | null) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Reset state setiap kali runId berganti untuk menghindari kebocoran log antar run
+    setEvents([]);
+    setWorkflowStatus("pending");
+    setError(null);
+
     if (!runId) return;
 
     const token = getToken();
