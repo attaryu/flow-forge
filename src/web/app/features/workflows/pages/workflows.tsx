@@ -215,6 +215,11 @@ export default function WorkflowsPage() {
           onSelectRun={(runId) => {
             setSelectedRunId(runId);
           }}
+          onRunDeleted={(deletedRunId) => {
+            if (selectedRunId === deletedRunId) {
+              setSelectedRunId(null);
+            }
+          }}
         />
 
         {/* Execution Log Details Drawer */}

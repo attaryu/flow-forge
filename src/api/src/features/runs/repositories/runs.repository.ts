@@ -71,4 +71,13 @@ export class RunsRepository {
       },
     });
   }
+
+  async deleteRun(runId: string, tenantId: string): Promise<void> {
+    await this.prisma.workflowRun.delete({
+      where: {
+        id: runId,
+        tenantId,
+      },
+    });
+  }
 }

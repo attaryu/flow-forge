@@ -69,4 +69,16 @@ export class RunsService {
     }
     return run;
   }
+
+  async deleteRun(runId: string, tenantId: string): Promise<void> {
+    try {
+      await this.runsRepository.deleteRun(runId, tenantId);
+    } catch (error: any) {
+      // P2025 is Prisma's code for Record to delete not found
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Workflow run with ID ${runId} not found`);
+      }
+      throw error;
+    }
+  }
 }

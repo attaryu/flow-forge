@@ -133,3 +133,19 @@ export function useWorkflowRunDetail(runId: string) {
     },
   });
 }
+
+// 6. Hook untuk menghapus history run beserta step logs-nya
+export function useDeleteRun(workflowId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (runId: string) => {
+      await http.delete(`runs/${runId}`);
+    },
+    onSuccess: (_, runId) => {
+      // Invalidate list run history untuk workflow ini
+      queryClient.invalidateQueries({ queryKey: ["workflows", workflowId, "runs"] });
+      // Hapus data detail run dari cache
+      queryClient.removeQueries({ queryKey: ["runs", runId] });
+    },
+  });
+}

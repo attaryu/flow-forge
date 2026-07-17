@@ -2,6 +2,9 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
+  HttpCode,
+  HttpStatus,
   Param,
   Sse,
   UseGuards,
@@ -50,6 +53,16 @@ export class RunsController {
     @CurrentOrgId() tenantId: string,
   ) {
     return this.runsService.getRunDetail(id, tenantId);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles('owner', 'editor')
+  async deleteRun(
+    @Param('id') id: string,
+    @CurrentOrgId() tenantId: string,
+  ) {
+    return this.runsService.deleteRun(id, tenantId);
   }
 
   @Get(':id/events')
