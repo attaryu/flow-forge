@@ -18,18 +18,19 @@ export interface DataTransformConfig {
 }
 
 export interface ConditionalConfig {
-  field: string;
   operator: "EQUALS" | "NOT_EQUALS" | "GREATER_THAN" | "CONTAINS";
-  value: string;
+  left: string;
+  right: string;
+  field?: string;
+  value?: string;
 }
 
 export interface WorkflowNode {
   id: string;
   type: NodeType;
-  position: { x: number; y: number };
-  config: HttpCallConfig | DelayConfig | DataTransformConfig | ConditionalConfig;
-  data: {
-    label: string;
+  config: any; // Using any to accommodate the union configuration structures
+  data?: {
+    label?: string;
   };
 }
 

@@ -1,22 +1,11 @@
 import * as React from "react";
-import {
-  ReactFlow,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  type Connection,
-  type Edge,
-  type Node,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { Plus, Check, Play, Save, AlertTriangle } from "lucide-react";
-import { nodeTypes } from "./nodes/node-types";
-import { NodeConfigPanel } from "./node-config-panel";
-import type { WorkflowNode, NodeType, DbEdge, WorkflowDefinition } from "../types";
+import Editor from "@monaco-editor/react";
+import type { Monaco } from "@monaco-editor/react";
+import { Play, Save, Check, RefreshCw, AlertTriangle, FileCode, GitBranch } from "lucide-react";
+import type { WorkflowNode, DbEdge, WorkflowDefinition } from "../types";
+import { validateWorkflow, type ValidationResult } from "../utils/workflow-validator";
+import { calculateLayout, type NodePosition } from "../utils/workflow-layout";
 import { Button } from "~/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 
 interface WorkflowEditorProps {
   initialDefinition?: WorkflowDefinition;
@@ -24,277 +13,781 @@ interface WorkflowEditorProps {
   isSaving?: boolean;
 }
 
-export function WorkflowEditor({ initialDefinition, onSave, isSaving }: WorkflowEditorProps) {
-  // Map initial edges database-format (from/to) to React Flow (source/target/id)
-  const initialNodes = React.useMemo(() => {
-    return (initialDefinition?.nodes || []).map((node) => ({
-      ...node,
-      data: { ...node.data, label: node.data.label || node.id },
-    })) as Node[];
-  }, [initialDefinition]);
-
-  const initialEdges = React.useMemo(() => {
-    return (initialDefinition?.edges || []).map((edge) => ({
-      id: `${edge.from}-${edge.to}-${edge.sourceHandle || "default"}`,
-      source: edge.from,
-      target: edge.to,
-      sourceHandle: edge.sourceHandle,
-    })) as Edge[];
-  }, [initialDefinition]);
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = React.useState<WorkflowNode | null>(null);
-  const [validationError, setValidationError] = React.useState<string | null>(null);
-
-  // Sync selected node with any updates from state changes
-  React.useEffect(() => {
-    if (selectedNode) {
-      const current = nodes.find((n) => n.id === selectedNode.id);
-      if (current) {
-        setSelectedNode(current as any);
-      }
-    }
-  }, [nodes, selectedNode?.id]);
-
-  const onConnect = React.useCallback(
-    (params: Connection) => {
-      const sourceNode = nodes.find((n) => n.id === params.source);
-      const isConditional = sourceNode?.type === "CONDITIONAL_BRANCH";
-      const edgeId = `${params.source}-${params.target}-${params.sourceHandle || "default"}`;
-      
-      const newEdge = {
-        ...params,
-        id: edgeId,
-        sourceHandle: isConditional ? params.sourceHandle : undefined,
-      };
-
-      setEdges((eds) => addEdge(newEdge as any, eds as any) as any);
+const workflowSchema = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  title: "Workflow",
+  type: "object",
+  required: ["name", "definition"],
+  properties: {
+    name: {
+      type: "string",
+      description: "The name of the workflow"
     },
-    [nodes, setEdges]
+    description: {
+      type: "string",
+      description: "An optional description of what the workflow does"
+    },
+    definition: {
+      type: "object",
+      required: ["nodes", "edges"],
+      properties: {
+        nodes: {
+          type: "array",
+          description: "List of nodes in the workflow",
+          items: {
+            type: "object",
+            required: ["id", "type", "config"],
+            properties: {
+              id: {
+                type: "string",
+                description: "Unique identifier for the node"
+              },
+              type: {
+                type: "string",
+                enum: ["HTTP_CALL", "DELAY", "CONDITIONAL_BRANCH", "DATA_TRANSFORM"],
+                description: "The type of execution node"
+              },
+              config: {
+                type: "object",
+                description: "Configuration specific to the node type"
+              }
+            },
+            allOf: [
+              {
+                "if": {
+                  "properties": {
+                    "type": { "const": "HTTP_CALL" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "required": ["url", "method"],
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "The HTTP URL to call"
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": ["GET", "POST"],
+                          "description": "The HTTP method"
+                        },
+                        "headers": {
+                          "type": "object",
+                          "description": "HTTP request headers as key-value pairs",
+                          "additionalProperties": { "type": "string" }
+                        },
+                        "payload": {
+                          "type": "string",
+                          "description": "HTTP request body/payload for POST requests"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": { "const": "DELAY" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "required": ["seconds"],
+                      "properties": {
+                        "seconds": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 86400,
+                          "description": "Number of seconds to delay execution (1 to 86400)"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": { "const": "CONDITIONAL_BRANCH" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "required": ["operator", "left", "right"],
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": ["EQUALS", "NOT_EQUALS", "GREATER_THAN", "CONTAINS"],
+                          "description": "Comparison operator"
+                        },
+                        "left": {
+                          "type": "string",
+                          "description": "Left operand value or variable placeholder (e.g. ${node-id.status})"
+                        },
+                        "right": {
+                          "type": "string",
+                          "description": "Right operand value to compare against"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": { "const": "DATA_TRANSFORM" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "required": ["mode"],
+                      "properties": {
+                        "mode": {
+                          "type": "string",
+                          "enum": ["simple", "advanced"],
+                          "description": "The transformation mode"
+                        },
+                        "operation": {
+                          "type": "string",
+                          "description": "For simple mode: The operation to execute"
+                        },
+                        "inputs": {
+                          "type": "array",
+                          "description": "For simple mode: Inputs to the operation",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "value": { "type": "string" }
+                            }
+                          }
+                        },
+                        "expression": {
+                          "type": "string",
+                          "description": "For advanced mode: The expression to evaluate"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "edges": {
+          "type": "array",
+          "description": "List of connections/edges between nodes",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "properties": {
+              "from": {
+                "type": "string",
+                "description": "The ID of the source node"
+              },
+              "to": {
+                "type": "string",
+                "description": "The ID of the target node"
+              },
+              "sourceHandle": {
+                "type": "string",
+                "enum": ["true", "false"],
+                "description": "Required for CONDITIONAL_BRANCH nodes: indicate 'true' or 'false' path"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+// 1. Color coding for node types
+const NODE_COLORS = {
+  HTTP_CALL: {
+    border: "#2196F3",
+    bg: "#e3f2fd",
+    text: "#0d47a1",
+  },
+  DELAY: {
+    border: "#FF9800",
+    bg: "#fff3e0",
+    text: "#e65100",
+  },
+  CONDITIONAL_BRANCH: {
+    border: "#9C27B0",
+    bg: "#f3e5f5",
+    text: "#4a148c",
+  },
+  DATA_TRANSFORM: {
+    border: "#4CAF50",
+    bg: "#e8f5e9",
+    text: "#1b5e20",
+  },
+};
+
+// 2. Node type description map
+const NODE_TYPE_LABELS: Record<string, string> = {
+  HTTP_CALL: "HTTP Call",
+  DELAY: "Delay Step",
+  CONDITIONAL_BRANCH: "Condition Branch",
+  DATA_TRANSFORM: "Data Transform",
+};
+
+// Sub-component: Legend
+function NodeTypeLegend() {
+  return (
+    <div className="flex flex-wrap gap-4 px-4 py-2 bg-muted/20 border-b text-xs text-muted-foreground">
+      <span className="font-semibold mr-1">Legend:</span>
+      {Object.entries(NODE_COLORS).map(([type, colors]) => (
+        <div key={type} className="flex items-center gap-1.5">
+          <span
+            className="w-3 h-3 rounded border"
+            style={{ backgroundColor: colors.bg, borderColor: colors.border }}
+          />
+          <span>{NODE_TYPE_LABELS[type]}</span>
+        </div>
+      ))}
+    </div>
   );
+}
 
-  const addNode = (type: NodeType) => {
-    const id = `${type.toLowerCase()}-${Date.now().toString().slice(-6)}`;
-    let defaultLabel = "";
-    let defaultConfig = {};
-
-    switch (type) {
-      case "HTTP_CALL":
-        defaultLabel = "HTTP Call";
-        defaultConfig = { method: "GET", url: "" };
-        break;
-      case "DELAY":
-        defaultLabel = "Delay Step";
-        defaultConfig = { seconds: 10 };
-        break;
-      case "DATA_TRANSFORM":
-        defaultLabel = "Data Transform";
-        defaultConfig = { mode: "simple", operation: "UPPERCASE" };
-        break;
-      case "CONDITIONAL_BRANCH":
-        defaultLabel = "Condition Branch";
-        defaultConfig = { field: "", operator: "EQUALS", value: "" };
-        break;
-    }
-
-    const newNode: Node = {
-      id,
-      type,
-      position: { x: Math.random() * 150 + 100, y: Math.random() * 150 + 100 },
-      data: { label: defaultLabel },
-      config: defaultConfig,
-    } as any;
-
-    setNodes((nds) => [...nds, newNode]);
-  };
-
-  const handleUpdateNode = (id: string, updates: Partial<WorkflowNode>) => {
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.id === id) {
-          const updated = { ...n, ...updates };
-          if (updates.data) {
-            updated.data = { ...n.data, ...updates.data };
-          }
-          if (updates.config) {
-            updated.config = { ...((n as any).config || {}), ...updates.config } as any;
-          }
-          return updated;
-        }
-        return n;
-      })
+// Sub-component: Validation Panel
+function ValidationPanel({ errors, valid }: { errors: string[]; valid: boolean }) {
+  if (valid) {
+    return (
+      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 flex items-start gap-2.5">
+        <Check className="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
+        <div>
+          <h4 className="font-semibold text-sm">Workflow is Valid</h4>
+          <p className="text-xs text-emerald-700 mt-0.5">
+            All structural validations, required fields, and DAG cycle checks passed successfully.
+          </p>
+        </div>
+      </div>
     );
+  }
+
+  return (
+    <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-md text-destructive flex items-start gap-2.5">
+      <AlertTriangle className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
+      <div>
+        <h4 className="font-semibold text-sm">Validation Errors ({errors.length})</h4>
+        <ul className="list-disc pl-5 mt-1 space-y-0.5 text-xs text-destructive/90">
+          {errors.map((err, i) => (
+            <li key={i}>{err}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// Sub-component: SVG Visualization Renderer
+interface WorkflowVisualizationProps {
+  nodes: WorkflowNode[];
+  edges: DbEdge[];
+  positions: NodePosition[];
+}
+
+function WorkflowVisualization({ nodes, edges, positions }: WorkflowVisualizationProps) {
+  const nodeWidth = 180;
+  const nodeHeight = 64;
+
+  const getPosition = (id: string) => {
+    return positions.find((p) => p.id === id) || { x: 50, y: 50 };
   };
 
-  const onNodeClick = (_: React.MouseEvent, node: Node) => {
-    setSelectedNode(node as any);
-  };
-
-  const onPaneClick = () => {
-    setSelectedNode(null);
-  };
-
-  // DAG validation: DFS cycle check
-  const validateDefinition = (currentNodes: Node[], currentEdges: Edge[]): boolean => {
-    setValidationError(null);
-
-    // 1. Check for cycles
-    const adjList = new Map<string, string[]>();
-    for (const node of currentNodes) {
-      adjList.set(node.id, []);
-    }
-    for (const edge of currentEdges) {
-      const list = adjList.get(edge.source);
-      if (list) {
-        list.push(edge.target);
-      }
-    }
-
-    const visited = new Set<string>();
-    const recStack = new Set<string>();
-
-    const hasCycle = (nodeId: string): boolean => {
-      if (recStack.has(nodeId)) return true;
-      if (visited.has(nodeId)) return false;
-
-      visited.add(nodeId);
-      recStack.add(nodeId);
-
-      const neighbors = adjList.get(nodeId) || [];
-      for (const neighbor of neighbors) {
-        if (hasCycle(neighbor)) return true;
-      }
-
-      recStack.delete(nodeId);
-      return false;
+  // Determine bounding box for SVG canvas sizing
+  const { width, height } = React.useMemo(() => {
+    if (positions.length === 0) return { width: 800, height: 400 };
+    let maxX = 0;
+    let maxY = 0;
+    positions.forEach((pos) => {
+      if (pos.x + nodeWidth > maxX) maxX = pos.x + nodeWidth;
+      if (pos.y + nodeHeight > maxY) maxY = pos.y + nodeHeight;
+    });
+    return {
+      width: Math.max(800, maxX + 100),
+      height: Math.max(500, maxY + 100),
     };
+  }, [positions]);
 
-    for (const node of currentNodes) {
-      if (hasCycle(node.id)) {
-        setValidationError("Cycle detected in the workflow! Flows must be Directed Acyclic Graphs (DAG).");
-        return false;
-      }
-    }
+  return (
+    <div className="w-full h-full min-h-[350px] overflow-auto bg-slate-50 border rounded-md relative select-none">
+      {nodes.length === 0 ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
+          <GitBranch className="h-10 w-10 text-muted-foreground/50 mb-2" />
+          <p className="text-sm">No nodes to visualize.</p>
+          <p className="text-xs text-muted-foreground/70 mt-1">
+            Add nodes in the JSON definition to view the visualization.
+          </p>
+        </div>
+      ) : (
+        <svg
+          width={width}
+          height={height}
+          className="font-sans"
+          style={{ minWidth: "100%", minHeight: "100%" }}
+        >
+          <defs>
+            {/* Standard slate arrowhead */}
+            <marker
+              id="arrow-default"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+            </marker>
+            {/* Green arrowhead for True branch */}
+            <marker
+              id="arrow-true"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+            </marker>
+            {/* Red arrowhead for False branch */}
+            <marker
+              id="arrow-false"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ef4444" />
+            </marker>
+          </defs>
 
-    // 2. Check conditional branches
-    for (const node of currentNodes) {
-      if (node.type === "CONDITIONAL_BRANCH") {
-        const outEdges = currentEdges.filter((e) => e.source === node.id);
-        const hasTrue = outEdges.some((e) => e.sourceHandle === "true");
-        const hasFalse = outEdges.some((e) => e.sourceHandle === "false");
-        
-        if (!hasTrue || !hasFalse) {
-          setValidationError(
-            `Conditional step "${node.data.label || node.id}" must have both a TRUE and a FALSE branch connected.`
-          );
-          return false;
-        }
-      }
-    }
+          {/* Render Connections/Edges */}
+          {edges.map((edge, idx) => {
+            const start = getPosition(edge.from);
+            const end = getPosition(edge.to);
 
-    return true;
-  };
+            // Connect from middle-right of source node to middle-left of target node
+            const startX = start.x + nodeWidth;
+            const startY = start.y + nodeHeight / 2;
+            const endX = end.x;
+            const endY = end.y + nodeHeight / 2;
 
-  const handleSave = () => {
-    const isValid = validateDefinition(nodes, edges);
-    if (!isValid) return;
+            // Draw a smooth bezier curve
+            const controlPointOffset = Math.max(50, Math.abs(endX - startX) * 0.4);
+            const cp1x = startX + controlPointOffset;
+            const cp1y = startY;
+            const cp2x = endX - controlPointOffset;
+            const cp2y = endY;
 
-    // Map React Flow edges back to Database schema format (from/to/sourceHandle)
-    const dbEdges: DbEdge[] = edges.map((edge) => ({
-      from: edge.source,
-      to: edge.target,
-      sourceHandle: edge.sourceHandle || undefined,
-    }));
+            const pathData = `M ${startX} ${startY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${endX} ${endY}`;
 
-    // Map React Flow nodes back to Db schema format
-    const dbNodes: WorkflowNode[] = nodes.map((node) => ({
-      id: node.id,
-      type: node.type as NodeType,
-      position: node.position,
-      config: (node as any).config || {},
-      data: {
-        label: (node.data.label as string) || node.id,
-      },
-    }));
+            // Handle labels and markers for conditional branches
+            let edgeColor = "#64748b";
+            let markerId = "arrow-default";
+            let edgeLabel = "";
 
-    onSave({
-      nodes: dbNodes,
-      edges: dbEdges,
+            if (edge.sourceHandle === "true") {
+              edgeColor = "#10b981"; // green
+              markerId = "arrow-true";
+              edgeLabel = "True";
+            } else if (edge.sourceHandle === "false") {
+              edgeColor = "#ef4444"; // red
+              markerId = "arrow-false";
+              edgeLabel = "False";
+            }
+
+            return (
+              <g key={`edge-${idx}`}>
+                <path
+                  d={pathData}
+                  fill="none"
+                  stroke={edgeColor}
+                  strokeWidth="2"
+                  markerEnd={`url(#${markerId})`}
+                  className="transition-all duration-300"
+                />
+                {edgeLabel && (
+                  <g transform={`translate(${startX + 18}, ${startY - 4})`}>
+                    <rect
+                      x="-14"
+                      y="-10"
+                      width="28"
+                      height="14"
+                      fill="#f8fafc"
+                      rx="3"
+                      stroke={edgeColor}
+                      strokeWidth="1"
+                    />
+                    <text
+                      fontSize="9"
+                      fontWeight="bold"
+                      fill={edgeColor}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      y="-3"
+                    >
+                      {edgeLabel}
+                    </text>
+                  </g>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Render Nodes */}
+          {nodes.map((node) => {
+            const pos = getPosition(node.id);
+            const typeColor = NODE_COLORS[node.type] || {
+              border: "#94a3b8",
+              bg: "#f1f5f9",
+              text: "#334155",
+            };
+
+            const label = node.data?.label || node.id;
+
+            return (
+              <g key={node.id} transform={`translate(${pos.x}, ${pos.y})`}>
+                <rect
+                  width={nodeWidth}
+                  height={nodeHeight}
+                  rx="6"
+                  ry="6"
+                  fill="#ffffff"
+                  stroke={typeColor.border}
+                  strokeWidth="2"
+                  className="filter drop-shadow-sm transition-all duration-300"
+                />
+                {/* Node type header band */}
+                <path
+                  d={`M 1 6 A 5 5 0 0 1 6 1 L ${nodeWidth - 6} 1 A 5 5 0 0 1 ${
+                    nodeWidth - 1
+                  } 6 L ${nodeWidth - 1} 18 L 1 18 Z`}
+                  fill={typeColor.bg}
+                />
+                <text
+                  x="8"
+                  y="13"
+                  fontSize="9"
+                  fontWeight="bold"
+                  fill={typeColor.text}
+                >
+                  {NODE_TYPE_LABELS[node.type] || node.type}
+                </text>
+                {/* Label text */}
+                <text
+                  x="8"
+                  y="38"
+                  fontSize="12"
+                  fontWeight="semibold"
+                  fill="#0f172a"
+                  className="truncate"
+                >
+                  {label.length > 22 ? `${label.slice(0, 20)}...` : label}
+                </text>
+                {/* Node ID */}
+                <text
+                  x="8"
+                  y="52"
+                  fontSize="9"
+                  fill="#64748b"
+                >
+                  ID: {node.id}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      )}
+    </div>
+  );
+}
+
+// Main Component
+export function WorkflowEditor({ initialDefinition, onSave, isSaving }: WorkflowEditorProps) {
+  const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemas: [
+        {
+          uri: "http://flowforge/workflow-schema.json",
+          fileMatch: ["workflow-editor.json"],
+          schema: workflowSchema,
+        },
+      ],
     });
   };
 
+  // Setup default starting JSON structure based on prompt
+  const fallbackDefinition: WorkflowDefinition = {
+    nodes: [
+      {
+        id: "http-1",
+        type: "HTTP_CALL",
+        config: {
+          url: "https://api.example.com/health",
+          method: "GET",
+          headers: {},
+        },
+      },
+    ],
+    edges: [],
+  };
+
+  const initialJSONString = React.useMemo(() => {
+    const rawDef = initialDefinition || fallbackDefinition;
+    // Format definition inside the full payload wrapper
+    const fullPayload = {
+      name: "Server Health Check",
+      description: "Optional description",
+      definition: rawDef,
+    };
+    return JSON.stringify(fullPayload, null, 2);
+  }, [initialDefinition]);
+
+  const [jsonText, setJsonText] = React.useState(initialJSONString);
+  const [debouncedJsonText, setDebouncedJsonText] = React.useState(initialJSONString);
+  const [validation, setValidation] = React.useState<ValidationResult>({
+    valid: true,
+    errors: [],
+  });
+
+  const [saveStatus, setSaveStatus] = React.useState<"idle" | "success" | "error">("idle");
+  const [saveErrorMessage, setSaveErrorMessage] = React.useState<string | null>(null);
+
+  // Maintain the last valid layouted nodes / edges to prevent drawing crashes on partial typos
+  const [lastValidLayout, setLastValidLayout] = React.useState<{
+    nodes: WorkflowNode[];
+    edges: DbEdge[];
+    positions: NodePosition[];
+  }>(() => {
+    const def = initialDefinition || fallbackDefinition;
+    return {
+      nodes: def.nodes,
+      edges: def.edges,
+      positions: calculateLayout(def.nodes, def.edges),
+    };
+  });
+
+  // Debounce JSON text changes
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedJsonText(jsonText);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [jsonText]);
+
+  // Re-validate and recalculate layout on debounced text update
+  React.useEffect(() => {
+    try {
+      const parsed = JSON.parse(debouncedJsonText);
+      const valResult = validateWorkflow(parsed);
+      setValidation(valResult);
+
+      if (valResult.valid) {
+        const nodes = parsed.definition.nodes;
+        const edges = parsed.definition.edges;
+        const positions = calculateLayout(nodes, edges);
+
+        setLastValidLayout({
+          nodes,
+          edges,
+          positions,
+        });
+      }
+    } catch (e: any) {
+      setValidation({
+        valid: false,
+        errors: [`Invalid JSON Syntax: ${e.message}`],
+      });
+    }
+  }, [debouncedJsonText]);
+
+  // Auto-format helper
+  const handleFormat = () => {
+    try {
+      const parsed = JSON.parse(jsonText);
+      setJsonText(JSON.stringify(parsed, null, 2));
+      setSaveStatus("idle");
+    } catch (e: any) {
+      setValidation({
+        valid: false,
+        errors: [`Invalid JSON Syntax: ${e.message}. Cannot format.`],
+      });
+    }
+  };
+
+  const handleEditorChange = (value: string | undefined) => {
+    setJsonText(value || "");
+    setSaveStatus("idle");
+  };
+
+  const handleSave = () => {
+    try {
+      const parsed = JSON.parse(jsonText);
+      const valResult = validateWorkflow(parsed);
+
+      if (!valResult.valid) {
+        setValidation(valResult);
+        setSaveStatus("error");
+        setSaveErrorMessage("Cannot save: The workflow definition is invalid. Review error panel.");
+        return;
+      }
+
+      setSaveStatus("idle");
+      // Since workflows.tsx wraps it in api.update call, we extract the definition portion
+      // and call the parent save handler with the updated definition.
+      // Wait, what about name and description? They are also edited in the JSON!
+      // In NestJS, name and description are passed at the root of the update body, e.g.:
+      // PATCH /workflows/:id
+      // Body: { name, description, definition }
+      // The updateWorkflowMutation.mutate expects { name, description, definition } or just partial fields.
+      // Wait, in workflows.tsx, handleSaveDefinition is:
+      // const handleSaveDefinition = (definition: WorkflowDefinition) => {
+      //   updateWorkflowMutation.mutate({ definition })
+      // }
+      // This means workflows.tsx is currently only updating the definition field!
+      // Let's adapt our onSave handler or edit workflows.tsx to allow updating the name/description as well!
+      // Let's check: if we pass the whole object { name, description, definition } in onSave, we can update workflows.tsx to pass it to the mutate function!
+      // Let's modify onSave signature to send { name, description, definition } to the parent!
+      // This is a direct, robust way to save everything updated in the JSON editor!
+      onSave({
+        name: parsed.name,
+        description: parsed.description,
+        definition: parsed.definition,
+      } as any);
+
+      setSaveStatus("success");
+    } catch (e: any) {
+      setSaveStatus("error");
+      setSaveErrorMessage(`Save Error: ${e.message}`);
+    }
+  };
+
+  // Keep saveStatus in sync with query mutations
+  React.useEffect(() => {
+    if (isSaving) {
+      setSaveStatus("idle");
+    }
+  }, [isSaving]);
+
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] border rounded-lg bg-background overflow-hidden relative">
-      {/* Top action bar */}
-      <div className="flex items-center justify-between border-b px-4 py-2 bg-muted/30">
-        <div className="flex gap-2">
-          <Button onClick={() => addNode("HTTP_CALL")} size="sm" variant="outline">
-            <Plus className="h-4 w-4 mr-1 text-sky-500" /> HTTP Call
-          </Button>
-          <Button onClick={() => addNode("DELAY")} size="sm" variant="outline">
-            <Plus className="h-4 w-4 mr-1 text-amber-500" /> Delay
-          </Button>
-          <Button onClick={() => addNode("DATA_TRANSFORM")} size="sm" variant="outline">
-            <Plus className="h-4 w-4 mr-1 text-indigo-500" /> Transform
-          </Button>
-          <Button onClick={() => addNode("CONDITIONAL_BRANCH")} size="sm" variant="outline">
-            <Plus className="h-4 w-4 mr-1 text-rose-500" /> Branch
-          </Button>
+    <div className="flex flex-col h-[calc(100vh-12rem)] border rounded-lg bg-background overflow-hidden">
+      {/* Legend & Layout Header */}
+      <NodeTypeLegend />
+
+      {/* Editor & Visualization Side by Side */}
+      <div className="flex flex-1 min-h-0 border-b relative">
+        {/* Left Side: Monaco Editor */}
+        <div className="w-1/2 h-full flex flex-col border-r border-slate-200">
+          <div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
+            <span className="flex items-center gap-1.5">
+              <FileCode className="w-3.5 h-3.5" />
+              JSON Definition Editor
+            </span>
+            {!validation.valid && (
+              <span className="text-rose-600 flex items-center gap-1 text-[10px] bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                Invalid
+              </span>
+            )}
+          </div>
+          <div className={`flex-1 min-h-0 ${!validation.valid ? "border-2 border-rose-500/20" : ""}`}>
+            <Editor
+              height="100%"
+              defaultLanguage="json"
+              path="workflow-editor.json"
+              onMount={handleEditorDidMount}
+              value={jsonText}
+              onChange={handleEditorChange}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 13,
+                fontFamily: "var(--font-geist-mono), Courier New, monospace",
+                lineNumbers: "on",
+                automaticLayout: true,
+                tabSize: 2,
+                scrollBeyondLastLine: false,
+              }}
+            />
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => validateDefinition(nodes, edges) && alert("Workflow is valid!")}
-          >
-            <Check className="h-4 w-4 mr-1 text-emerald-500" /> Validate
-          </Button>
-          <Button onClick={handleSave} size="sm" disabled={isSaving}>
-            <Save className="h-4 w-4 mr-1" />
-            {isSaving ? "Saving..." : "Save Workflow"}
-          </Button>
+
+        {/* Right Side: Live SVG Visualization */}
+        <div className="w-1/2 h-full flex flex-col">
+          <div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
+            <span className="flex items-center gap-1.5">
+              <GitBranch className="w-3.5 h-3.5" />
+              Live Workflow Diagram
+            </span>
+          </div>
+          <div className="flex-1 min-h-0 p-4 bg-slate-50">
+            <WorkflowVisualization
+              nodes={lastValidLayout.nodes}
+              edges={lastValidLayout.edges}
+              positions={lastValidLayout.positions}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Main workspace */}
-      <div className="flex flex-1 relative overflow-hidden">
-        {validationError && (
-          <div className="absolute top-4 left-4 right-4 z-10">
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Validation Error</AlertTitle>
-              <AlertDescription>{validationError}</AlertDescription>
-            </Alert>
-          </div>
-        )}
+      {/* Validation & Save Footer */}
+      <div className="p-4 bg-slate-50 flex flex-col gap-4">
+        <ValidationPanel errors={validation.errors} valid={validation.valid} />
 
-        <div className="flex-1 h-full">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            onNodeClick={onNodeClick}
-            onPaneClick={onPaneClick}
-            fitView
-          >
-            <Controls />
-            <Background />
-          </ReactFlow>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleFormat}
+              className="cursor-pointer font-medium"
+            >
+              <RefreshCw className="h-4 w-4 mr-1 text-slate-500" />
+              Format JSON
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {saveStatus === "success" && (
+              <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200">
+                Workflow saved successfully!
+              </span>
+            )}
+            {saveStatus === "error" && (
+              <span className="text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-md border border-rose-200">
+                {saveErrorMessage}
+              </span>
+            )}
+            <Button
+              onClick={handleSave}
+              size="sm"
+              disabled={isSaving || !validation.valid}
+              className="cursor-pointer font-medium min-w-[120px]"
+            >
+              <Save className="h-4 w-4 mr-1" />
+              {isSaving ? "Saving..." : "Save Workflow"}
+            </Button>
+          </div>
         </div>
-
-        {selectedNode && (
-          <div className="h-full z-10 bg-card">
-            <NodeConfigPanel
-              node={selectedNode}
-              onUpdate={handleUpdateNode}
-              onClose={() => setSelectedNode(null)}
-            />
-          </div>
-        )}
       </div>
     </div>
   );

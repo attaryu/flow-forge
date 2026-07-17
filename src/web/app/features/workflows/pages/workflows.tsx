@@ -30,9 +30,7 @@ const defaultDefinition: WorkflowDefinition = {
     {
       id: "http-call-start",
       type: "HTTP_CALL",
-      position: { x: 100, y: 150 },
       config: { method: "GET", url: "https://api.example.com/start" },
-      data: { label: "Start API Call" },
     },
   ],
   edges: [],
@@ -81,13 +79,11 @@ export default function WorkflowsPage() {
   // When editing a workflow, we instantiate the update mutation for that specific workflow ID
   const updateWorkflowMutation = useUpdateWorkflow(editingWorkflow?.id || "");
 
-  const handleSaveDefinition = (definition: WorkflowDefinition) => {
+  const handleSaveDefinition = (payload: any) => {
     if (!editingWorkflow) return;
 
     updateWorkflowMutation.mutate(
-      {
-        definition,
-      },
+      payload,
       {
         onSuccess: (updatedWorkflow) => {
           setEditingWorkflow(updatedWorkflow);
