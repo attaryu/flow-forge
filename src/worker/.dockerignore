@@ -1,6 +1,5 @@
 node_modules/
-build/
-.react-router/
+dist/
 .env
 .env.*
 *.md

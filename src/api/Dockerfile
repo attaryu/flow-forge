@@ -1,13 +1,25 @@
-FROM node:20-alpine AS builder
-RUN npm install -g pnpm
+FROM node:22-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
+FROM base AS prod-deps
 WORKDIR /app
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY .npmrc package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/shared-validation/package.json ./packages/shared-validation/
 COPY src/api/package.json ./src/api/
 
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+FROM base AS build
+WORKDIR /app
+
+COPY .npmrc package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared-validation/package.json ./packages/shared-validation/
+COPY src/api/package.json ./src/api/
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY packages/shared-validation ./packages/shared-validation
 COPY src/api ./src/api
@@ -15,23 +27,22 @@ COPY src/api ./src/api
 RUN pnpm --filter @flow-forge/shared-validation build
 
 WORKDIR /app/src/api
+
 RUN npx prisma generate
 RUN pnpm run build
 
-FROM node:20-alpine AS runner
+FROM node:22-slim AS runtime
 WORKDIR /app
 
-RUN npm install -g pnpm
-
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
-COPY --from=builder /app/packages/shared-validation ./packages/shared-validation
-COPY --from=builder /app/src/api/package.json ./src/api/
-COPY --from=builder /app/src/api/dist ./src/api/dist
-COPY --from=builder /app/src/api/node_modules ./src/api/node_modules
-COPY --from=builder /app/src/api/prisma ./src/api/prisma
-COPY --from=builder /app/src/api/tsconfig.json ./src/api/
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=build /app/packages/shared-validation ./packages/shared-validation
+COPY --from=build /app/src/api/dist ./src/api/dist
+COPY --from=build /app/src/api/prisma ./src/api/prisma
+COPY --from=build /app/src/api/prisma.config.ts ./src/api/prisma.config.ts
+COPY package.json ./
 
 WORKDIR /app/src/api
-EXPOSE 3000
+RUN npx prisma generate
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && pnpm run start:prod"]
+EXPOSE 3000
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node dist/main"]

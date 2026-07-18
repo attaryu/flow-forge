@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:15-alpine3.23
-    container_name: postgres_container
+    container_name: flow-forge-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mypassword
@@ -18,7 +18,7 @@ services:
 
   redis:
     image: redis:8.8-alpine
-    container_name: redis_container
+    container_name: flow-forge-redis
     ports:
       - 6379:6379
     volumes:
@@ -34,6 +34,8 @@ services:
       context: .
       dockerfile: src/api/Dockerfile
     container_name: flow-forge-api
+    profiles:
+      - app
     ports:
       - "3000:3000"
     environment:
@@ -60,6 +62,8 @@ services:
       context: .
       dockerfile: src/worker/Dockerfile
     container_name: flow-forge-worker
+    profiles:
+      - app
     environment:
       - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
@@ -79,8 +83,10 @@ services:
       context: .
       dockerfile: src/web/Dockerfile
     container_name: flow-forge-web
+    profiles:
+      - app
     ports:
-      - "3030:3030"
+      - 3030:3030
     environment:
       - PORT=3030
       - VITE_API_URL=http://localhost:3000
