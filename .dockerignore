@@ -1,0 +1,12 @@
+**/node_modules
+**/.git
+**/.gitignore
+**/graphify-out
+**/.agents
+**/.opencode
+**/.env
+**/.env.*
+**/dist
+**/build
+**/.next
+**/*.md

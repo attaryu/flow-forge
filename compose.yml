@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:15-alpine3.23
+    container_name: flow-forge-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: flow_forge
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d flow_forge"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:8.8-alpine
+    container_name: flow-forge-redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: src/api/Dockerfile
+    container_name: flow-forge-api
+    profiles:
+      - app
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mypassword@postgres:5432/flow_forge?schema=public
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=mypassword
+      - DATABASE_NAME=flow_forge
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=super-secret-key-change-me-in-production
+      - JWT_ACCESS_EXPIRES_IN=30m
+      - JWT_REFRESH_EXPIRES_IN=3d
+      - BCRYPT_SALT_ROUNDS=15
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: src/worker/Dockerfile
+    container_name: flow-forge-worker
+    profiles:
+      - app
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=mypassword
+      - DATABASE_NAME=flow_forge
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: src/web/Dockerfile
+    container_name: flow-forge-web
+    profiles:
+      - app
+    ports:
+      - 3030:3030
+    environment:
+      - PORT=3030
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - api
+
+volumes:
+  redis_data:
+  postgres_data:
