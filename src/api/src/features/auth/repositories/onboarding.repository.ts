@@ -61,11 +61,80 @@ export class OnboardingRepository {
         },
       });
 
+      // 6. Create default workflow for the user/organization
+      await tx.workflow.create({
+        data: {
+          tenantId: organization.id,
+          createdBy: user.id,
+          name: 'Cek Fakta Kucing',
+          description: 'Contoh workflow yang memakai semua jenis node (HTTP_CALL, CONDITIONAL_BRANCH, DELAY, DATA_TRANSFORM). Ambil fakta acak dari catfact.ninja (API publik, gratis, tanpa API key), lalu cabang berdasarkan panjang teksnya.',
+          status: 'active',
+          definition: {
+            nodes: [
+              {
+                id: 'http-1',
+                type: 'HTTP_CALL',
+                config: {
+                  url: 'https://catfact.ninja/fact',
+                  method: 'GET',
+                  headers: {
+                    Accept: 'application/json',
+                  },
+                },
+              },
+              {
+                id: 'cond-1',
+                type: 'CONDITIONAL_BRANCH',
+                config: {
+                  operator: 'GREATER_THAN',
+                  left: '${http-1.data.length}',
+                  right: '100',
+                },
+              },
+              {
+                id: 'transform-long',
+                type: 'DATA_TRANSFORM',
+                config: {
+                  mode: 'simple',
+                  operation: 'CONCAT',
+                  inputs: [
+                    { value: 'Fakta panjang: ' },
+                    { value: '${http-1.data.fact}' },
+                  ],
+                },
+              },
+              {
+                id: 'delay-1',
+                type: 'DELAY',
+                config: {
+                  seconds: 5,
+                },
+              },
+              {
+                id: 'transform-short',
+                type: 'DATA_TRANSFORM',
+                config: {
+                  mode: 'advanced',
+                  expression: '${http-1.data.length} <= 100 ? "Fakta pendek: " + ${http-1.data.fact} : "N/A"',
+                },
+              },
+            ],
+            edges: [
+              { from: 'http-1', to: 'cond-1' },
+              { from: 'cond-1', to: 'transform-long', sourceHandle: 'true' },
+              { from: 'cond-1', to: 'delay-1', sourceHandle: 'false' },
+              { from: 'delay-1', to: 'transform-short' },
+            ],
+          },
+        },
+      });
+
       return {
         id: user.id,
         email: user.email,
         name: user.name,
         createdAt: user.createdAt,
+        organizationId: organization.id,
       };
     });
   }

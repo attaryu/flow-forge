@@ -11,6 +11,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { setActiveOrgId } from '~/shared/utils/active-org';
 
 export async function clientLoader() {
   try {
@@ -55,6 +56,7 @@ export default function Register() {
     },
     onSuccess: (data) => {
       setSession(data.accessToken, data.user);
+      setActiveOrgId(data.user.organizationId);
       navigate("/dashboard");
     },
     onError: async (error) => {

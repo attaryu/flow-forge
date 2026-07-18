@@ -35,6 +35,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "~/components/ui/sidebar";
+import { clearActiveOrgId } from '~/shared/utils/active-org';
 
 export interface SidebarUser {
   name: string;
@@ -58,6 +59,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       // Ignore
     }
     clearSession();
+    clearActiveOrgId();
     navigate("/login");
   };
 

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { redirect, Outlet } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppSidebar } from '~/components/app-sidebar';
@@ -46,6 +47,15 @@ export default function DashboardLayout() {
 	);
 	const queryClientInstance = useQueryClient();
 	const activeOrgId = getActiveOrgId();
+
+	// Automatically select the first organization if none is selected
+	React.useEffect(() => {
+		if (!activeOrgId && !orgsLoading && orgs.length > 0) {
+			setActiveOrgId(orgs[0].id);
+			queryClientInstance.clear();
+			window.location.reload();
+		}
+	}, [activeOrgId, orgs, orgsLoading, queryClientInstance]);
 
 	if (!user) return null;
 
