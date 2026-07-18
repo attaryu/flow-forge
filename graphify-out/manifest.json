@@ -285,9 +285,9 @@
     "semantic_hash": "6a47d64fcc136324ca395065a707ef76"
   },
   "compose.yml": {
-    "mtime": 1784188405.641407,
-    "ast_hash": "1004a5627e9669687634b2bf0225b721",
-    "semantic_hash": "1004a5627e9669687634b2bf0225b721"
+    "mtime": 1784338893.1253426,
+    "ast_hash": "b8d7529483cd2e49b266db11863861f0",
+    "semantic_hash": ""
   },
   "docs/architecture-decision.md": {
     "mtime": 1784329396.4682539,
