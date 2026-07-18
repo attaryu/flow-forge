@@ -1,16 +1,16 @@
 # Graph Report - flow-forge  (2026-07-18)
 
 ## Corpus Check
-- 184 files · ~53,746 words
+- 178 files · ~53,397 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1605 nodes · 2512 edges · 135 communities (101 shown, 34 thin omitted)
+- 1546 nodes · 2446 edges · 149 communities (92 shown, 57 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 40 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `abeebb17`
+- Built from commit: `577c562a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -109,7 +109,18 @@
 - Theming and Customization
 - Base vs Radix API Differences
 - RegisterInputDto
+- React Router
+- shadcn CLI Reference
+- Customizing Components
 - Icons
+- collapsible.tsx
+- Framework Mode (Full-Stack)
+- graphify-update.py
+- app-sidebar.tsx
+- node-config-panel.tsx
+- organizations.controller.ts
+- settings.tsx
+- cn
 - package.json
 - JwtStrategy
 - class-variance-authority
@@ -133,6 +144,10 @@
 - @monaco-editor/react
 - @react-router/serve
 - sonner
+- eslint-config-prettier
+- bullmq
+- ioredis
+- @nestjs/common
 - rxjs
 - Community 138 (Controller)
 - Community 139 (Get)
@@ -147,10 +162,10 @@
 4. `PrismaProvider` - 21 edges
 5. `UserResponseDto` - 18 edges
 6. `AuthService` - 16 edges
-7. `compilerOptions` - 15 edges
-8. `CurrentOrgId` - 15 edges
-9. `Roles()` - 15 edges
-10. `Button()` - 15 edges
+7. `CurrentOrgId` - 15 edges
+8. `Roles()` - 15 edges
+9. `Button()` - 15 edges
+10. `getToken()` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `graphify` --conceptually_related_to--> `FlowForge System Architecture`  [INFERRED]
@@ -177,11 +192,11 @@
 - **core_design_principles** — docs_architecture_decision_multi_tenancy, docs_architecture_decision_per_node_execution, docs_architecture_decision_separate_queues, docs_architecture_decision_state_in_db, docs_architecture_decision_realtime_updates [EXTRACTED 1.00]
 - **workflow_execution_pipeline** — docs_business_logic_workflow_lifecycle, docs_architecture_decision_bullmq, docs_architecture_decision_per_node_execution, docs_architecture_decision_realtime_updates, docs_database_schema_workflow_runs [INFERRED 0.85]
 
-## Communities (135 total, 34 thin omitted)
+## Communities (149 total, 57 thin omitted)
 
 ### Community 0 - "devDependencies"
-Cohesion: 0.10
-Nodes (18): Post, CreateWorkflowDto, IsNotEmpty, IsObject, IsOptional, IsString, IsObject, IsOptional (+10 more)
+Cohesion: 0.12
+Nodes (14): CreateWorkflowDto, IsNotEmpty, IsObject, IsOptional, IsString, IsObject, IsOptional, IsString (+6 more)
 
 ### Community 1 - "shadcn CLI"
 Cohesion: 0.04
@@ -192,36 +207,36 @@ Cohesion: 0.06
 Nodes (43): Compile and run the project, Deployment, Description, License, NestJS, Node.js, pnpm, Project setup (+35 more)
 
 ### Community 3 - "devDependencies"
-Cohesion: 0.05
-Nodes (43): bcryptjs, class-transformer, cookie-parser, @nestjs/jwt, @nestjs/passport, passport, passport-jwt, @prisma/adapter-pg (+35 more)
+Cohesion: 0.10
+Nodes (21): @nestjs/jwt, @nestjs/passport, passport-jwt, @prisma/adapter-pg, dependencies, class-validator, @nestjs/config, @nestjs/core (+13 more)
 
 ### Community 4 - "Chat and Messaging UI"
-Cohesion: 0.21
-Nodes (14): Dialog(), DialogClose(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay(), DialogTitle() (+6 more)
+Cohesion: 0.09
+Nodes (36): Badge(), badgeVariants, Button(), buttonVariants, Dialog(), DialogClose(), DialogContent(), DialogDescription() (+28 more)
 
 ### Community 5 - "dependencies"
-Cohesion: 0.06
-Nodes (34): author, description, jest, collectCoverageFrom, coverageDirectory, moduleFileExtensions, rootDir, testEnvironment (+26 more)
+Cohesion: 0.15
+Nodes (13): jest, collectCoverageFrom, coverageDirectory, moduleFileExtensions, rootDir, testEnvironment, testRegex, transform (+5 more)
 
 ### Community 6 - "scripts"
-Cohesion: 0.13
-Nodes (20): AppSidebar(), AppSidebarProps, SidebarUser, DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuGroup(), DropdownMenuItem() (+12 more)
+Cohesion: 0.11
+Nodes (24): AppSidebarProps, SidebarUser, Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage() (+16 more)
 
 ### Community 7 - "Route Module"
-Cohesion: 0.11
-Nodes (22): Sidebar(), SidebarContext, SidebarContextProps, SidebarGroup(), SidebarGroupAction(), SidebarGroupContent(), SidebarGroupLabel(), SidebarInput() (+14 more)
+Cohesion: 0.07
+Nodes (51): react, Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, SelectContent(), SelectGroup() (+43 more)
 
 ### Community 8 - "compilerOptions"
 Cohesion: 0.18
 Nodes (9): OrganizationsController, Controller, Get, UseGuards, OrganizationResponseDto, OrganizationsRepository, Injectable, OrganizationsService (+1 more)
 
 ### Community 9 - "compilerOptions"
-Cohesion: 0.14
-Nodes (23): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, Avatar(), AvatarBadge(), AvatarFallback() (+15 more)
+Cohesion: 0.15
+Nodes (13): scripts, build, format, lint, start, start:debug, start:dev, start:prod (+5 more)
 
 ### Community 10 - "FlowForge System Architecture"
-Cohesion: 0.17
-Nodes (11): ConditionalBranchHandler, Injectable, DataTransformHandler, Injectable, DelayHandler, Injectable, HttpCallHandler, Injectable (+3 more)
+Cohesion: 0.19
+Nodes (9): ConditionalBranchHandler, Injectable, DataTransformHandler, Injectable, DelayHandler, Injectable, HttpCallHandler, Injectable (+1 more)
 
 ### Community 11 - "compilerOptions"
 Cohesion: 0.09
@@ -240,40 +255,40 @@ Cohesion: 0.08
 Nodes (24): compilerOptions, allowSyntheticDefaultImports, declaration, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames, incremental (+16 more)
 
 ### Community 15 - "app.module.ts"
-Cohesion: 0.09
-Nodes (22): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, module, moduleResolution (+14 more)
+Cohesion: 0.22
+Nodes (8): author, description, license, name, prisma, seed, private, version
 
 ### Community 16 - "PrismaProvider"
-Cohesion: 0.21
-Nodes (11): NODE_COLORS, NODE_TYPE_LABELS, workflowSchema, WorkflowEditor(), WorkflowEditorProps, WorkflowVisualizationProps, DbEdge, WorkflowDefinition (+3 more)
+Cohesion: 0.09
+Nodes (31): NODE_COLORS, NODE_TYPE_LABELS, workflowSchema, WorkflowEditor(), WorkflowEditorProps, WorkflowVisualizationProps, StepLog, useCreateWorkflow() (+23 more)
 
 ### Community 17 - "workflows.controller.ts"
 Cohesion: 0.06
-Nodes (32): MinLength, Req, Res, AuthController, Body, Controller, HttpCode, Post (+24 more)
+Nodes (35): MinLength, Req, Res, AuthController, Body, Controller, Get, HttpCode (+27 more)
 
 ### Community 18 - "AuthController"
-Cohesion: 0.17
-Nodes (8): ExecutionModule, Module, DatabaseProvider, Injectable, TriggerProcessor, Injectable, InjectQueue, Processor
+Cohesion: 0.21
+Nodes (5): DatabaseProvider, Injectable, RedisProvider, Injectable, ExecutionJobPayload
 
 ### Community 19 - "auth.module.ts"
 Cohesion: 0.22
-Nodes (14): ConditionalConfig, DataTransformConfig, DbEdge, DelayConfig, HttpCallConfig, NodeType, WorkflowDefinition, WorkflowInput (+6 more)
+Nodes (5): InjectQueue, NodeExecutorService, Injectable, StepLoggerService, Injectable
 
 ### Community 20 - "package.json"
 Cohesion: 0.09
 Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent (+13 more)
 
 ### Community 21 - "devDependencies"
-Cohesion: 0.15
-Nodes (8): ExecutionProcessor, Injectable, InjectQueue, Processor, RunManagerService, Injectable, StepLoggerService, Injectable
+Cohesion: 0.23
+Nodes (5): ExecutionProcessor, Injectable, Processor, RunManagerService, Injectable
 
 ### Community 22 - "exclude"
 Cohesion: 0.10
 Nodes (20): Configuring Registries, Setup, `shadcn:get_add_command_for_items`, `shadcn:get_audit_checklist`, `shadcn:get_item_examples_from_registries`, `shadcn:get_project_registries`, `shadcn:list_items_in_registries`, shadcn MCP Server (+12 more)
 
 ### Community 23 - "exclude"
-Cohesion: 0.13
-Nodes (18): JwtAuthGuard, Injectable, RunsController, Controller, Delete, Get, HttpCode, Param (+10 more)
+Cohesion: 0.11
+Nodes (23): Patch, CurrentUser, RunsController, Controller, Delete, Get, HttpCode, Param (+15 more)
 
 ### Community 24 - "Component Composition Rules"
 Cohesion: 0.10
@@ -292,36 +307,32 @@ Cohesion: 0.11
 Nodes (19): axios, jexl, dependencies, axios, class-validator, jexl, @nestjs/bullmq, @nestjs/config (+11 more)
 
 ### Community 28 - "seed.ts"
-Cohesion: 0.04
-Nodes (45): @base-ui/react, class-variance-authority, clsx, elkjs, @fontsource-variable/geist, isbot, ky, lucide-react (+37 more)
+Cohesion: 0.11
+Nodes (19): class-variance-authority, isbot, react-hook-form, react-router, @react-router/serve, recharts, dependencies, class-variance-authority (+11 more)
 
 ### Community 29 - "Icon Rules"
 Cohesion: 0.40
 Nodes (3): SchedulerService, Injectable, InjectQueue
 
 ### Community 30 - "opencode.json"
-Cohesion: 0.07
-Nodes (29): @react-router/dev, devDependencies, @react-router/dev, tailwindcss, @tailwindcss/vite, @types/node, @types/react, @types/react-dom (+21 more)
+Cohesion: 0.11
+Nodes (19): @react-router/dev, devDependencies, @react-router/dev, tailwindcss, @tailwindcss/vite, @types/node, @types/react, @types/react-dom (+11 more)
 
 ### Community 31 - "OnboardingRepository"
 Cohesion: 0.12
 Nodes (15): 10. Step Logs, 1. Users, 2. Organizations (Tenants), 3. Roles, 4. Organization Members, 5. User Sessions, 6. Workflows, 7. Workflow Versions (+7 more)
-
-### Community 32 - "graphify.js"
-Cohesion: 0.12
-Nodes (15): description, devDependencies, typescript, vitest, typescript, vitest, main, name (+7 more)
 
 ### Community 33 - "welcome.tsx"
 Cohesion: 0.13
 Nodes (14): RSC Data Loading, RSC Data Mode, RSC Framework Mode, ServerComponent, RSC Data Mode, RSC Framework Mode, Client/Server Boundaries, Data Loading in RSC (+6 more)
 
 ### Community 34 - "prisma"
-Cohesion: 0.17
-Nodes (5): Global, PrismaModule, Module, PrismaProvider, Injectable
+Cohesion: 0.16
+Nodes (6): Global, UserSessionWithUser, PrismaModule, Module, PrismaProvider, Injectable
 
 ### Community 35 - "eslint-config-prettier"
-Cohesion: 0.07
-Nodes (36): Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle(), Input() (+28 more)
+Cohesion: 0.09
+Nodes (34): Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle(), Input() (+26 more)
 
 ### Community 36 - "@eslint/js"
 Cohesion: 0.14
@@ -331,10 +342,6 @@ Nodes (14): `apply` — Apply a preset to an existing project, `build` — Build
 Cohesion: 0.15
 Nodes (14): Address Schemes, Build and Verify, GitHub Registries, Include, Item Definitions, Mental Model, Registry Authoring and Addresses, Registry Dependencies (+6 more)
 
-### Community 38 - "globals"
-Cohesion: 0.17
-Nodes (14): useWorkflowRunSSE(), useCreateWorkflow(), useDeleteWorkflow(), useUpdateWorkflow(), workflowQueryOption(), workflowsQueryOption, WorkflowsPage(), ConditionalConfig (+6 more)
-
 ### Community 39 - "jest"
 Cohesion: 0.15
 Nodes (12): Data and Mutations, Forms, Fetchers, and Pending UI, Framework Mode, Framework Shape, Layout and Root Route Rules, Metadata, Middleware, Sessions, and Auth, Read the Local Docs by Mode (+4 more)
@@ -342,14 +349,6 @@ Nodes (12): Data and Mutations, Forms, Fetchers, and Pending UI, Framework Mode,
 ### Community 40 - "@nestjs/cli"
 Cohesion: 0.15
 Nodes (13): Avatar always needs AvatarFallback, Button has no isPending or isLoading prop, Callouts use Alert, Card structure, Choosing between overlay components, Component Composition, Contents, Dialog, Sheet, and Drawer always need a Title (+5 more)
-
-### Community 41 - "@nestjs/schematics"
-Cohesion: 0.33
-Nodes (5): Get, UseGuards, CurrentUser, AuthResponseDto, UserResponseDto
-
-### Community 42 - "@nestjs/testing"
-Cohesion: 0.24
-Nodes (9): Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator(), Separator() (+1 more)
 
 ### Community 43 - "prettier"
 Cohesion: 0.15
@@ -360,8 +359,8 @@ Cohesion: 0.15
 Nodes (13): scripts, build, format, lint, start, start:debug, start:dev, start:prod (+5 more)
 
 ### Community 45 - "supertest"
-Cohesion: 0.22
-Nodes (11): SheetHeader(), RunDetailDrawer(), RunDetailDrawerProps, runDetailQueryOption(), StepLog, TriggerRunResponse, useWorkflowRunDetail(), useWorkflowRuns() (+3 more)
+Cohesion: 0.18
+Nodes (8): ExecutionModule, Module, TriggerModule, Module, TriggerProcessor, Injectable, InjectQueue, Processor
 
 ### Community 46 - "ts-jest"
 Cohesion: 0.15
@@ -376,8 +375,8 @@ Cohesion: 0.16
 Nodes (11): DashboardController, Controller, Get, UseGuards, DashboardModule, Module, DashboardStatsDto, RecentRunDto (+3 more)
 
 ### Community 49 - "tsconfig-paths"
-Cohesion: 0.29
-Nodes (7): OrgSwitcher(), organizationsQueryOption, useActiveOrg(), Organization, DashboardLayout(), getActiveOrgId(), setActiveOrgId()
+Cohesion: 0.16
+Nodes (15): AppSidebar(), Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator() (+7 more)
 
 ### Community 50 - "@types/bcryptjs"
 Cohesion: 0.20
@@ -396,8 +395,8 @@ Cohesion: 0.18
 Nodes (10): author, description, keywords, license, main, name, packageManager, scripts (+2 more)
 
 ### Community 54 - "@types/node"
-Cohesion: 0.14
-Nodes (10): AppController, Controller, Get, AppModule, Module, AppService, Injectable, bootstrap() (+2 more)
+Cohesion: 0.16
+Nodes (8): AppController, Controller, Get, AppModule, Module, AppService, Injectable, bootstrap()
 
 ### Community 55 - "@types/passport-jwt"
 Cohesion: 0.20
@@ -406,14 +405,6 @@ Nodes (9): Data and Mutations, Data Mode, Data Router Shape, Forms, Fetchers, an
 ### Community 56 - "@types/pg"
 Cohesion: 0.20
 Nodes (10): Component Docs, Examples, and Usage, Current Project Context, Detailed References, Key Fields, Key Patterns, Principles, Quick Reference, shadcn/ui (+2 more)
-
-### Community 57 - "@types/supertest"
-Cohesion: 0.20
-Nodes (8): Patch, Body, Controller, Delete, HttpCode, Param, UseGuards, WorkflowsController
-
-### Community 58 - "Mode Migration"
-Cohesion: 0.29
-Nodes (7): react, SidebarMenuSkeleton(), SidebarProvider(), LiveExecutionPanel(), WorkflowVisualization(), useIsMobile(), react
 
 ### Community 60 - "eslint.config.mjs"
 Cohesion: 0.22
@@ -433,15 +424,11 @@ Nodes (9): className for Layout Only, cn() Utility Rule, No Manual Dark Override
 
 ### Community 64 - "components.json"
 Cohesion: 0.22
-Nodes (9): prisma, devDependencies, @eslint/eslintrc, prisma, typescript, typescript-eslint, @eslint/eslintrc, typescript (+1 more)
-
-### Community 65 - "Tools"
-Cohesion: 0.39
-Nodes (5): Badge(), badgeVariants, LiveExecutionPanelProps, StepState, SSEEvent
+Nodes (9): devDependencies, eslint, @eslint/eslintrc, typescript, typescript-eslint, eslint, @eslint/eslintrc, typescript (+1 more)
 
 ### Community 66 - "Core Decisions"
-Cohesion: 0.25
-Nodes (4): SheetDescription(), SheetFooter(), SheetOverlay(), SheetTitle()
+Cohesion: 0.18
+Nodes (10): name, private, scripts, build, dev, start, test, test:watch (+2 more)
 
 ### Community 67 - "Business Logic"
 Cohesion: 0.36
@@ -466,10 +453,6 @@ Nodes (11): AppModule, Module, AuthModule, Module, OrganizationsModule, Module, 
 ### Community 72 - "Component Composition"
 Cohesion: 0.25
 Nodes (7): exclude, extends, dist, node_modules, **/*spec.ts, test, ./tsconfig.json
-
-### Community 73 - "Styling & Customization"
-Cohesion: 0.32
-Nodes (3): RedisProvider, Injectable, ExecutionJobPayload
 
 ### Community 74 - "routes.ts"
 Cohesion: 0.25
@@ -504,8 +487,8 @@ Cohesion: 0.33
 Nodes (5): collection, compilerOptions, deleteOutDir, $schema, sourceRoot
 
 ### Community 82 - "Base vs Radix"
-Cohesion: 0.43
-Nodes (5): Button(), buttonVariants, RunTriggerButton(), RunTriggerButtonProps, useTriggerWorkflowRun()
+Cohesion: 0.29
+Nodes (4): JwtAuthGuard, Injectable, OrganizationGuard, Injectable
 
 ### Community 83 - "Chat & Messaging"
 Cohesion: 0.33
@@ -540,23 +523,23 @@ Cohesion: 0.50
 Nodes (3): plugin, $schema, .opencode/plugins/graphify.js
 
 ## Knowledge Gaps
-- **648 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `name`, `version`, `description` (+643 more)
+- **612 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `name`, `version`, `description` (+607 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `seed.ts` to `Mode Migration`, `opencode.json`?**
+- **Why does `dependencies` connect `seed.ts` to `graphify.js`, `Tools`, `Core Decisions`, `React Router`, `Customizing Components`, `collapsible.tsx`, `Route Module`, `graphify-update.py`, `Styling & Customization`, `@nestjs/testing`, `app-sidebar.tsx`, `node-config-panel.tsx`, `cn`, `@nestjs/common`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `cn()` connect `Route Module` to `eslint-config-prettier`, `Chat and Messaging UI`, `scripts`, `PrismaProvider`, `tsconfig-paths`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `react` connect `Mode Migration` to `Chat and Messaging UI`, `globals`, `Route Module`, `supertest`, `PrismaProvider`, `tsconfig-paths`, `seed.ts`?**
+- **Why does `react` connect `Route Module` to `PrismaProvider`, `tsconfig-paths`, `Chat and Messaging UI`, `seed.ts`?**
   _High betweenness centrality (0.014) - this node is a cross-community bridge._
-- **Why does `cn()` connect `compilerOptions` to `Tools`, `Core Decisions`, `eslint-config-prettier`, `Chat and Messaging UI`, `scripts`, `Route Module`, `@nestjs/testing`, `supertest`, `PrismaProvider`, `Base vs Radix`, `Mode Migration`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `$schema`, `.opencode/plugins/graphify.js`, `name` to the rest of the system?**
-  _648 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _612 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.09841269841269841 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11553030303030302 - nodes in this community are weakly interconnected._
 - **Should `shadcn CLI` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**

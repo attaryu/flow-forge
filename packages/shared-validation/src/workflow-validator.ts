@@ -1,4 +1,4 @@
-import type { WorkflowNode, DbEdge } from "../types";
+import type { WorkflowNode, DbEdge } from "./types";
 
 export interface ValidationResult {
   valid: boolean;
@@ -8,7 +8,6 @@ export interface ValidationResult {
 export function validateWorkflow(workflowJson: any): ValidationResult {
   const errors: string[] = [];
 
-  // 1. Check top-level JSON structure
   if (!workflowJson || typeof workflowJson !== "object" || Array.isArray(workflowJson)) {
     return {
       valid: false,
@@ -47,12 +46,10 @@ export function validateWorkflow(workflowJson: any): ValidationResult {
     return { valid: false, errors };
   }
 
-  // Helper for tracking existing node IDs
   const nodeIds = new Set<string>();
   const nodesList = nodes as WorkflowNode[];
   const edgesList = edges as DbEdge[];
 
-  // 2. Validate Nodes
   nodesList.forEach((node, index) => {
     if (!node || typeof node !== "object" || Array.isArray(node)) {
       errors.push(`Node at index ${index} must be an object.`);
@@ -79,7 +76,6 @@ export function validateWorkflow(workflowJson: any): ValidationResult {
       return;
     }
 
-    // Validate config fields per type
     const config = node.config;
     if (node.type === "HTTP_CALL") {
       if (!config.url || typeof config.url !== "string" || config.url.trim() === "") {
@@ -125,7 +121,6 @@ export function validateWorkflow(workflowJson: any): ValidationResult {
     }
   });
 
-  // 3. Validate Edges
   edgesList.forEach((edge, index) => {
     if (!edge || typeof edge !== "object" || Array.isArray(edge)) {
       errors.push(`Edge at index ${index} must be an object.`);
@@ -149,7 +144,6 @@ export function validateWorkflow(workflowJson: any): ValidationResult {
     return { valid: false, errors };
   }
 
-  // 4. Validate CONDITIONAL_BRANCH and outgoing edge limits
   const outgoingEdgesMap = new Map<string, DbEdge[]>();
   nodeIds.forEach(id => outgoingEdgesMap.set(id, []));
   edgesList.forEach(edge => outgoingEdgesMap.get(edge.from)?.push(edge));
@@ -169,7 +163,6 @@ export function validateWorkflow(workflowJson: any): ValidationResult {
     }
   });
 
-  // 5. Cycle detection
   if (hasCycle(nodesList, edgesList)) {
     errors.push("Workflow cannot contain cycles (must be a Directed Acyclic Graph).");
   }
@@ -196,7 +189,7 @@ function hasCycle(nodes: WorkflowNode[], edges: DbEdge[]): boolean {
       if (!visited.has(neighbor)) {
         if (dfs(neighbor)) return true;
       } else if (inStack.has(neighbor)) {
-        return true; // cycle found
+        return true;
       }
     }
 
