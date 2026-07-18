@@ -35,6 +35,7 @@ export class OnboardingService {
         user.email,
         user.name,
         user.createdAt,
+        user.organizationId,
       );
     } catch (error) {
       // Re-throw NestJS exceptions directly, otherwise wrap them
