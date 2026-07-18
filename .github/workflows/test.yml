@@ -27,6 +27,9 @@ jobs:
 
       - run: pnpm --filter @flow-forge/shared-validation build
 
-      - run: pnpm --filter api exec prisma generate
+      - name: Generate Prisma Client
+        run: pnpm --filter api exec prisma generate
+        env:
+          DATABASE_URL: postgresql://postgres:mypassword@localhost:5432/flow_forge?schema=public
 
       - run: pnpm -r test
