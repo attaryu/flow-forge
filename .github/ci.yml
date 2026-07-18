@@ -25,4 +25,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm --filter @flow-forge/shared-validation build
+
       - run: pnpm -r test
