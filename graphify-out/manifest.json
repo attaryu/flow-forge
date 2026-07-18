@@ -25,9 +25,9 @@
     "semantic_hash": "b6c9c4b64b7092bea720263a47b574cf"
   },
   "src/api/package.json": {
-    "mtime": 1784331568.06467,
+    "mtime": 1784335560.9707105,
     "ast_hash": "e05f889f2dfd1b4b5d9985fb84887442",
-    "semantic_hash": ""
+    "semantic_hash": "e05f889f2dfd1b4b5d9985fb84887442"
   },
   "src/api/prisma.config.ts": {
     "mtime": 1784188405.8439686,
@@ -175,9 +175,9 @@
     "semantic_hash": "e780bb4ef2c65c42dd494771f21f2f12"
   },
   "src/web/package.json": {
-    "mtime": 1784331518.412812,
+    "mtime": 1784335560.996191,
     "ast_hash": "add7357ef0fb8b52ac1807b9dad8d3a8",
-    "semantic_hash": ""
+    "semantic_hash": "add7357ef0fb8b52ac1807b9dad8d3a8"
   },
   "src/web/react-router.config.ts": {
     "mtime": 1784204007.600454,
@@ -310,19 +310,19 @@
     "semantic_hash": "47395220c60b75f185fd4a761abd6981"
   },
   "src/api/README.md": {
-    "mtime": 1784188405.8299723,
-    "ast_hash": "8e8d8363582979f3debdc321fd7dbe4a",
-    "semantic_hash": "8e8d8363582979f3debdc321fd7dbe4a"
+    "mtime": 1784336580.715397,
+    "ast_hash": "fb7d0413db68ff34be0a3aa40b027826",
+    "semantic_hash": "fb7d0413db68ff34be0a3aa40b027826"
   },
   "src/web/README.md": {
-    "mtime": 1784188406.0234556,
-    "ast_hash": "326d3abf712fa381742d7e7b196af2c2",
-    "semantic_hash": "326d3abf712fa381742d7e7b196af2c2"
+    "mtime": 1784336593.2134793,
+    "ast_hash": "1cad9ceb0f9115f8bf5b7bcc2d20314b",
+    "semantic_hash": "1cad9ceb0f9115f8bf5b7bcc2d20314b"
   },
   "src/worker/README.md": {
-    "mtime": 1784188406.1010244,
-    "ast_hash": "8e8d8363582979f3debdc321fd7dbe4a",
-    "semantic_hash": "8e8d8363582979f3debdc321fd7dbe4a"
+    "mtime": 1784336607.2650898,
+    "ast_hash": "308bff6575d56b377c02c2b2d17d164b",
+    "semantic_hash": "308bff6575d56b377c02c2b2d17d164b"
   },
   "src/web/app/welcome/logo-dark.svg": {
     "mtime": 1784188406.049996,
@@ -560,9 +560,9 @@
     "semantic_hash": "cb56bf002d36bb860c3d320a23bd871a"
   },
   "graphify-update.py": {
-    "mtime": 1784331764.6717632,
+    "mtime": 1784335560.9106863,
     "ast_hash": "9a233d33bc13400e116445986a848f67",
-    "semantic_hash": ""
+    "semantic_hash": "9a233d33bc13400e116445986a848f67"
   },
   "src/api/src/features/workflows/controllers/workflows.controller.ts": {
     "mtime": 1784329645.3074281,
@@ -590,9 +590,9 @@
     "semantic_hash": "62bf721b46e16a0ad4bba430beb3e912"
   },
   "src/api/src/features/workflows/services/workflows.service.ts": {
-    "mtime": 1784331636.9688935,
+    "mtime": 1784335560.9876301,
     "ast_hash": "8db4315ca3579a441215227bf54e95cd",
-    "semantic_hash": ""
+    "semantic_hash": "8db4315ca3579a441215227bf54e95cd"
   },
   "src/api/src/features/workflows/workflows.module.ts": {
     "mtime": 1784329645.3200438,
@@ -685,9 +685,9 @@
     "semantic_hash": "23b7fc10d67b667f5aabd00d85e7ce89"
   },
   "src/web/app/features/workflows/components/workflow-editor.tsx": {
-    "mtime": 1784331525.3592286,
-    "ast_hash": "51e637bf781f60d4f810f2051e464ed1",
-    "semantic_hash": ""
+    "mtime": 1784335560.9876301,
+    "ast_hash": "2eb7c53fd2dcb5fdfee60d3e3c3fd8e4",
+    "semantic_hash": "2eb7c53fd2dcb5fdfee60d3e3c3fd8e4"
   },
   "src/web/app/features/workflows/hooks/api/use-workflows.ts": {
     "mtime": 1784329645.4630823,
@@ -915,43 +915,73 @@
     "semantic_hash": "3be2b7b8ddd45bec02cff592099d7523"
   },
   "packages/shared-validation/package.json": {
-    "mtime": 1784331361.9149892,
-    "ast_hash": "f1ee543552e8d100960729bb7c7f6f6d",
-    "semantic_hash": ""
+    "mtime": 1784335560.9136844,
+    "ast_hash": "40c00d6807c4e1e6e1661f8e4e29701b",
+    "semantic_hash": "40c00d6807c4e1e6e1661f8e4e29701b"
   },
   "packages/shared-validation/src/index.ts": {
-    "mtime": 1784331372.798247,
+    "mtime": 1784335560.918752,
     "ast_hash": "d1ff8fc8079df93cbfaeaf0240588e0c",
-    "semantic_hash": ""
+    "semantic_hash": "d1ff8fc8079df93cbfaeaf0240588e0c"
   },
   "packages/shared-validation/src/types.ts": {
-    "mtime": 1784331365.2723231,
+    "mtime": 1784335560.9214003,
     "ast_hash": "6d68343d054bc40bfba92b0e96ac6e2a",
-    "semantic_hash": ""
+    "semantic_hash": "6d68343d054bc40bfba92b0e96ac6e2a"
   },
   "packages/shared-validation/src/workflow-validator.spec.ts": {
-    "mtime": 1784331410.025152,
+    "mtime": 1784335560.925942,
     "ast_hash": "55fa2d5747a02d1c042d7230a9287e7b",
-    "semantic_hash": ""
+    "semantic_hash": "55fa2d5747a02d1c042d7230a9287e7b"
   },
   "packages/shared-validation/src/workflow-validator.ts": {
-    "mtime": 1784331381.6746771,
+    "mtime": 1784335560.9289746,
     "ast_hash": "381518d1111e279512934f3e89ca2cdc",
-    "semantic_hash": ""
-  },
-  "packages/shared-validation/tsconfig.json": {
-    "mtime": 1784331363.1006875,
-    "ast_hash": "6d179700a9d6aa0a05319efd6fa6720d",
-    "semantic_hash": ""
+    "semantic_hash": "381518d1111e279512934f3e89ca2cdc"
   },
   "packages/shared-validation/vitest.config.ts": {
-    "mtime": 1784331363.4635077,
+    "mtime": 1784335560.9474344,
     "ast_hash": "44f11654e7d303361249a1e715367be6",
-    "semantic_hash": ""
+    "semantic_hash": "44f11654e7d303361249a1e715367be6"
   },
   "src/api/src/features/workflows/services/workflows.service.spec.ts": {
-    "mtime": 1784331652.7287292,
+    "mtime": 1784335560.9784243,
     "ast_hash": "c269b300419b2ae510b21e1d5cacc8f1",
-    "semantic_hash": ""
+    "semantic_hash": "c269b300419b2ae510b21e1d5cacc8f1"
+  },
+  "packages/shared-validation/tsconfig.cjs.json": {
+    "mtime": 1784335560.931979,
+    "ast_hash": "0b65f9eac572f3440b730a59a3e376f7",
+    "semantic_hash": "0b65f9eac572f3440b730a59a3e376f7"
+  },
+  "packages/shared-validation/tsconfig.esm.json": {
+    "mtime": 1784335560.9375844,
+    "ast_hash": "5b322bec3c2813bb669a48d73c53acbe",
+    "semantic_hash": "5b322bec3c2813bb669a48d73c53acbe"
+  },
+  "src/web/app/placeholder.test.ts": {
+    "mtime": 1784335560.9876301,
+    "ast_hash": "d445734a775f4205f35456a6eecde2e1",
+    "semantic_hash": "d445734a775f4205f35456a6eecde2e1"
+  },
+  "src/web/vitest.config.ts": {
+    "mtime": 1784335561.0002353,
+    "ast_hash": "fd909eec74dce47cab8315649f155135",
+    "semantic_hash": "fd909eec74dce47cab8315649f155135"
+  },
+  ".github/workflows/test.yml": {
+    "mtime": 1784335560.7573187,
+    "ast_hash": "b510699f382aeca2b6423ce5981a0568",
+    "semantic_hash": "b510699f382aeca2b6423ce5981a0568"
+  },
+  "README.md": {
+    "mtime": 1784336388.9217017,
+    "ast_hash": "015f992780d8d7d42b48d45e94147b2d",
+    "semantic_hash": "015f992780d8d7d42b48d45e94147b2d"
+  },
+  "packages/shared-validation/README.md": {
+    "mtime": 1784336619.4837904,
+    "ast_hash": "004728dc31da4b8b16bbe05ee66c5477",
+    "semantic_hash": "004728dc31da4b8b16bbe05ee66c5477"
   }
 }
