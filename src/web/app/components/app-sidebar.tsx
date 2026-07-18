@@ -1,5 +1,7 @@
 import * as React from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import { http } from "~/shared/utils/http";
+import { clearSession } from "~/shared/utils/session";
 import {
   BadgeCheck,
   Bell,
@@ -47,6 +49,17 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const location = useLocation();
   const activePath = location.pathname;
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await http.post("auth/logout").json();
+    } catch {
+      // Ignore
+    }
+    clearSession();
+    navigate("/login");
+  };
 
   const navigationItems = [
     {
@@ -164,12 +177,13 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem render={<form action="/logout" method="post" className="w-full" />}>
-                    <input type="hidden" name="intent" value="logout" />
-                    <button type="submit" className="w-full flex items-center text-left text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log out
-                    </button>
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    variant="destructive"
+                    className="w-full cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
