@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { HTTPError } from "ky";
 import { http } from "~/shared/utils/http";
 import { setSession } from "~/shared/utils/session";
+import { setActiveOrgId } from "~/shared/utils/active-org";
 import { queryClient } from "~/shared/utils/query-client";
 import { userQueryOption } from "../hooks/api/use-user";
 import { Button } from "~/components/ui/button";
@@ -45,6 +46,7 @@ export default function Login() {
     },
     onSuccess: (data) => {
       setSession(data.accessToken, data.user);
+      setActiveOrgId(data.user.organizationId);
       navigate("/dashboard");
     },
     onError: async (error) => {

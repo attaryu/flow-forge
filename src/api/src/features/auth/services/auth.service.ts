@@ -11,6 +11,7 @@ import { AuthResponseDto } from '../dto/auth-response.dto';
 import { LoginInputDto } from '../dto/login-input.dto';
 import { UserResponseDto } from '../dto/user-response.dto';
 import { AuthRepository } from '../repositories/auth.repository';
+import { PrismaProvider } from '../../../shared/providers/prisma/prisma.provider';
 import { DurationUtils } from '../utils/duration.utils';
 
 interface TokenPayload {
@@ -29,6 +30,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly durationUtils: DurationUtils,
+    private readonly prisma: PrismaProvider,
   ) {
     this.jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET');
     this.accessExpiresIn = this.configService.getOrThrow<string>(
@@ -59,11 +61,17 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    const member = await this.prisma.organizationMember.findFirst({
+      where: { userId: user.id },
+      orderBy: { joinedAt: 'asc' },
+    });
+
     return this.generateTokensAndSession(
       user.id,
       user.email,
       user.name,
       user.createdAt,
+      member?.organizationId,
     );
   }
 
@@ -82,12 +90,18 @@ export class AuthService {
     // Revoke the old refresh token (rotation)
     await this.authRepository.revokeSession(token);
 
+    const member = await this.prisma.organizationMember.findFirst({
+      where: { userId: session.user.id },
+      orderBy: { joinedAt: 'asc' },
+    });
+
     // Generate new pair of tokens
     return this.generateTokensAndSession(
       session.user.id,
       session.user.email,
       session.user.name,
       session.user.createdAt,
+      member?.organizationId,
     );
   }
 
@@ -115,6 +129,7 @@ export class AuthService {
     email: string,
     name: string,
     createdAt: Date,
+    organizationId?: string,
   ): Promise<{ response: AuthResponseDto; refreshToken: string }> {
     const payload: TokenPayload = { sub: userId, email };
 
@@ -153,6 +168,7 @@ export class AuthService {
       email,
       name,
       createdAt,
+      organizationId,
     };
 
     return {
