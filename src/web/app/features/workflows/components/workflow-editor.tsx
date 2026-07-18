@@ -577,7 +577,7 @@ export function WorkflowEditor({
 			{/* Editor & Visualization Stacked Vertically */}
 			<div className="flex flex-col flex-1 min-h-0 border-b relative">
 				{/* Top: Monaco Editor */}
-				<div className="w-full h-[500px] max-h-[700px] flex flex-col border-b border-slate-200">
+				<div className="w-full h-125 max-h-175 flex flex-col border-b border-slate-200">
 					<div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
 						<span className="flex items-center gap-1.5">
 							<FileCode className="w-3.5 h-3.5" />
@@ -646,7 +646,7 @@ export function WorkflowEditor({
 				</div>
 
 				{/* Bottom: Live SVG Visualization */}
-				<div className="w-full h-[500px] flex flex-col">
+				<div className="w-full h-125 flex flex-col">
 					<div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b text-xs font-semibold text-slate-600">
 						<span className="flex items-center gap-1.5">
 							<GitBranch className="w-3.5 h-3.5" />
