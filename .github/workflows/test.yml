@@ -27,4 +27,6 @@ jobs:
 
       - run: pnpm --filter @flow-forge/shared-validation build
 
+      - run: pnpm --filter api prisma generate
+
       - run: pnpm -r test
